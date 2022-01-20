@@ -106,7 +106,7 @@ function Mapbox({ setShow,onClose }) {
   return (
     <div>
       <div className="container_map">
-        <div style={{ width: '100%', height: '90vh' }}>
+        <div style={{ height: '90vh' }}>
           <div className="mapbox">
             <ReactMapGL
               ref={mapRef}

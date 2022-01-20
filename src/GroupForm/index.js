@@ -14,6 +14,7 @@ import useFirestore from '../hooks/useFirestore'
 import AppProvider, { AppContext } from '../Context/AppProvider'
 import { addDocument } from '../firebase/services'
 import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
+import LogOut from '../components/LogOut'
 
 function GroupForm() {
   const {
@@ -44,12 +45,10 @@ function GroupForm() {
   const handleGoBack = () => {
     navigate(-1)
   }
-  const onClose =() => { 
-
+  const onClose = () => {
     setShow(false)
     setShows(false)
-  
-}
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -86,6 +85,7 @@ function GroupForm() {
     <div className="login_form">
       <div className="krqetT"></div>
       <div className="ifKAln"></div>
+      <LogOut />
       <Container>
         <Row>
           <Col md={2}></Col>
@@ -131,7 +131,7 @@ function GroupForm() {
                     show={shows}
                     onHide={() => setShows(false)}
                     ModalTile={''}
-                    ModalChildren={<MapboxLocationVote  onClose={onClose}/>}
+                    ModalChildren={<MapboxLocationVote onClose={onClose} />}
                     size="xl"
                   />
                 </div>
@@ -147,16 +147,20 @@ function GroupForm() {
                     show={show}
                     onHide={() => setShow(false)}
                     ModalTile={''}
-                    ModalChildren={<Mapbox onClose={onClose}/>}
+                    ModalChildren={<Mapbox onClose={onClose} />}
                     size="xl"
                   />
                 </div>
- 
+
                 <div className="login_btn_wrapper" style={{ marginTop: '50px' }}>
                   <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
                     Trở Về
                   </button>
-                  <button type="submit" className="btn login_btn" disabled={!(formik.isValid && formik.dirty)}>
+                  <button
+                    type="submit"
+                    className="btn login_btn"
+                    disabled={!(formik.isValid && formik.dirty && locationVote.length != 0)}
+                  >
                     TẠO PHÒNG BÌNH CHỌN
                   </button>
                 </div>

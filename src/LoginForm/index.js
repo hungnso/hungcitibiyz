@@ -11,6 +11,7 @@ import ModalForm from '../components/ModalForm'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { AppContext } from '../Context/AppProvider'
+import LogOut from '../components/LogOut'
 
 export default function LoginForm() {
   let navigate = useNavigate()
@@ -72,6 +73,7 @@ export default function LoginForm() {
     <div className="login_form">
       <div className="krqetT"></div>
       <div className="ifKAln"></div>
+      <LogOut />
       <Container>
         <h1
           style={{
@@ -131,7 +133,11 @@ export default function LoginForm() {
                   <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
                     Trở Về
                   </button>
-                  <button type="submit" disabled={!(formik.values.full_name && curraddName)} className="btn login_btn">
+                  <button
+                    type="submit"
+                    className="btn login_btn"
+                    disabled={!(formik.isValid && formik.dirty && curraddName.length != 0)}
+                  >
                     Tiếp Theo
                   </button>
                 </div>

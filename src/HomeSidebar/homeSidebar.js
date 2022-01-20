@@ -175,8 +175,9 @@ const HomeSidebar = () => {
               Kết thúc
             </button>
           </div>
-
-          <button class="go-back" onClick={handleGoBack}><span>Quay lại</span></button>
+          <button className="go-back" onClick={handleGoBack}>
+            <span>Quay lại</span>
+          </button>
         </div>
       </div>
     </>

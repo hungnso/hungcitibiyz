@@ -11,6 +11,7 @@ import { AuthContext } from '../Context/AuthProvider'
 import useCurrAdd from '../hooks/useCurrAdd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import LogOut from '../components/LogOut'
 function Home() {
   const {
     user: { uid, displayName }
@@ -24,7 +25,6 @@ function Home() {
   const navigate = useNavigate()
   const handleCLick = e => {
     e.preventDefault()
-
     navigate('/contact')
   }
 
@@ -105,6 +105,7 @@ function Home() {
     <div className="login_form">
       <div className="krqetT"></div>
       <div className="ifKAln"></div>
+      <LogOut />
       <Container>
         <h1
           style={{
@@ -167,7 +168,7 @@ function Home() {
                             {formik.errors.content && formik.touched.content && (
                               <p className="msg_err">{formik.errors.content}</p>
                             )}
-                            <button type="submit" className="btn_tg">
+                            <button type="submit" className="btn_tg" disabled={!(formik.isValid && formik.dirty)}>
                               Tham Gia
                             </button>
                           </form>
