@@ -13,7 +13,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 function Home() {
   const {
-    user: { uid }
+    user: { uid, displayName }
   } = useContext(AuthContext)
   const [idRoom, setIdRoom] = useState('')
   const [show, setShow] = useState(false)
@@ -106,6 +106,24 @@ function Home() {
       <div className="krqetT"></div>
       <div className="ifKAln"></div>
       <Container>
+        <h1
+          style={{
+            color: 'white',
+            textTransform: 'uppercase',
+            textAlign: 'center'
+          }}
+        >
+          Chào mừng {displayName} đến với App Cùng Đi Chơi
+        </h1>
+        <h3
+          style={{
+            color: 'white',
+            textTransform: 'uppercase',
+            textAlign: 'center'
+          }}
+        >
+          Địa chỉ hiện tại của bạn là :{' '}
+        </h3>
         <Row>
           <Col lg={3}></Col>
           <Col lg={6}>
@@ -121,7 +139,11 @@ function Home() {
                 </Col>
                 <Col md={6}>
                   <div className="home_item">
-                    <button onClick={() => setShow(true)}>
+                    <button
+                      onClick={e => {
+                        setShow(true)
+                      }}
+                    >
                       <img className="icon_zoom" src={'http://cdn.onlinewebfonts.com/svg/img_356964.png'} />
                       <span>Vào Phòng Sẵn Có</span>
                     </button>

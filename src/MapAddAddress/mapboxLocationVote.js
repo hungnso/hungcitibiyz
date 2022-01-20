@@ -109,7 +109,7 @@ function MapboxLocationVote({ setShow ,onClose}) {
 
   
 
-  const isAddressHome =()=>{
+  const isAddressHome = () =>{
     for(let i=0; i<listLocationVote.length; i++) {
       if(listLocationVote[i].location == nameAddress){
         return true
@@ -123,37 +123,36 @@ function MapboxLocationVote({ setShow ,onClose}) {
 
   // Submit location
 
-const { locationVote } = React.useContext(AppContext)
-const isAddress =()=>{
-  for(let i=0; i<locationVote.length; i++) {
-    if(locationVote[i] ==nameAddress){
-      return true
-      break
-    }else{
-      return false
+  const { locationVote } = React.useContext(AppContext)
+  const isAddress = () =>{
+    for(let i=0; i<locationVote.length; i++) {
+      if(locationVote[i] == nameAddress){
+        return true
+        break
+      }else{
+        return false
+      }
     }
   }
 
-}
-
   var handleSubmitLocation = (e) => {
-        e.preventDefault();
-        console.log(marker.latitude)
-        console.log(marker.longitude)
-        console.log(nameAddress)
-        // setCurrAddName(nameAddress)
-        // console.log(curraddName)
-        // setLocationVote([])
-        setLocationVote(prev => [...prev, nameAddress])
-        onClose()
+    e.preventDefault();
+    console.log(marker.latitude)
+    console.log(marker.longitude)
+    console.log(nameAddress)
+    // setCurrAddName(nameAddress)
+    // console.log(curraddName)
+    // setLocationVote([])
+    setLocationVote(prev => [...prev, nameAddress])
+    onClose()
     //   }
     // }
   }
   const handleSubmitLocation2 =(e) =>{
     if(isAddress()){
-      alert('đã tồn tại Địa chỉ này')
+      alert('Đã tồn tại địa chỉ này')
     }else if(isAddressHome()){
-      alert('đã tồn tại Địa chỉ này')
+      alert('Đã tồn tại địa chỉ này')
     }
     else{
       handleSubmitLocation(e)

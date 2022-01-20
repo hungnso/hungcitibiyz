@@ -80,6 +80,7 @@
 }
 .vote {
     display: flex;
+    height: 25%;
     position: relative;
     border-radius: 8px;
     align-items: center;
@@ -89,8 +90,6 @@
 
 .vote input {
     margin-left: 10px;
-    height: 35px;
-    width: 35px;
 }
 
 .vote h4:first-child {

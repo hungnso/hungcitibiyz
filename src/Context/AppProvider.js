@@ -10,6 +10,7 @@ export default function AppProvider({ children }) {
   const [curraddName, setCurrAddName] = useState('')
   const [selectedRoomId, setSelectedRoomId] = useState('')
   const [locationVote, setLocationVote] = useState([])
+  const [list, setList] = useState([])
 
   const { user } = React.useContext(AuthContext)
 
@@ -71,7 +72,9 @@ export default function AppProvider({ children }) {
         selectedRoomHost,
         selectedRoomClient,
         locationVote,
-        setLocationVote
+        setLocationVote,
+        list,
+        setList
       }}
     >
       {children}
