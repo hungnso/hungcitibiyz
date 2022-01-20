@@ -7,8 +7,9 @@ import Geocoder from 'react-map-gl-geocoder'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import './style.css'
 import { AppContext } from '../Context/AppProvider'
+import useFirestore from '../hooks/useFirestore'
 
-function MapboxLocationVote({ setShow }) {
+function MapboxLocationVote({ setShow ,onClose}) {
   const { curraddName, setCurrAddName, setLocationVote } = useContext(AppContext)
 
   // Token
@@ -83,18 +84,80 @@ function MapboxLocationVote({ setShow }) {
     SetnameAddress(location.result.place_name)
   }
 
+//Kiểm tra tồn tại địa chỉ chưa
+
+  const { selectedRoomHost, selectedRoomClient } = React.useContext(AppContext)
+  const conditionHostVote = React.useMemo(() => {
+    return {
+      fieldName: 'room_id',
+      operator: '==',
+      compareValue: selectedRoomHost.id
+    }
+  }, [selectedRoomHost.id])
+  const conditionClientVote = React.useMemo(() => {
+    return {
+      fieldName: 'room_id',
+      operator: '==',
+      compareValue: selectedRoomClient.id
+    }
+  }, [selectedRoomClient.id])
+  const arrLocationVoteHost = useFirestore('locations', conditionHostVote)
+  const arrLocationVoteClient = useFirestore('locations', conditionClientVote)
+  
+
+  let listLocationVote = [...arrLocationVoteClient, ...arrLocationVoteHost]
+
+  
+
+  const isAddressHome =()=>{
+    for(let i=0; i<listLocationVote.length; i++) {
+      if(listLocationVote[i].location == nameAddress){
+        return true
+        break
+      }else{
+        return false
+      }
+    }
+  }
+  
+
   // Submit location
 
-  var handleSubmitLocation = () => {
-    console.log(marker.latitude)
-    console.log(marker.longitude)
-    console.log(nameAddress)
-    // setCurrAddName(nameAddress)
-    // console.log(curraddName)
-    // setLocationVote([])
-    setLocationVote(prev => [...prev, nameAddress])
+const { locationVote } = React.useContext(AppContext)
+const isAddress =()=>{
+  for(let i=0; i<locationVote.length; i++) {
+    if(locationVote[i] ==nameAddress){
+      return true
+      break
+    }else{
+      return false
+    }
+  }
 
-    // setShow(false)
+}
+
+  var handleSubmitLocation = (e) => {
+        e.preventDefault();
+        console.log(marker.latitude)
+        console.log(marker.longitude)
+        console.log(nameAddress)
+        // setCurrAddName(nameAddress)
+        // console.log(curraddName)
+        // setLocationVote([])
+        setLocationVote(prev => [...prev, nameAddress])
+        onClose()
+    //   }
+    // }
+  }
+  const handleSubmitLocation2 =(e) =>{
+    if(isAddress()){
+      alert('đã tồn tại Địa chỉ này')
+    }else if(isAddressHome()){
+      alert('đã tồn tại Địa chỉ này')
+    }
+    else{
+      handleSubmitLocation(e)
+    }
   }
 
   // Return
@@ -140,7 +203,7 @@ function MapboxLocationVote({ setShow }) {
           </div>
         </div>
       </div>
-      <button className="btnAdd" onClick={handleSubmitLocation}>
+      <button className="btnAdd" onClick={e =>handleSubmitLocation2(e)}>
         Thêm địa điểm
       </button>
     </div>

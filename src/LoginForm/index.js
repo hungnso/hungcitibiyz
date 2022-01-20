@@ -15,6 +15,7 @@ import { AppContext } from '../Context/AppProvider'
 export default function LoginForm() {
   let navigate = useNavigate()
   const { curraddName } = useContext(AppContext)
+  const { roomClient } = useContext(AppContext)
 
   // React.useEffect(() => {
   //   db.collection('users').onSnapshot(snapshot => {
@@ -40,6 +41,11 @@ export default function LoginForm() {
     user: { displayName, uid }
   } = useContext(AuthContext)
 
+  const onClose =() => { 
+
+    setShow(false)
+  
+}
   const formik = useFormik({
     initialValues: {
       full_name: ''
@@ -86,11 +92,12 @@ export default function LoginForm() {
                     <InputForm
                       type="text"
                       id="Text1"
-                      placeholder="Tên Người Dùng *"
+                      placeholder={ formik.values.full_name ? formik.values.full_name :"Tên Người Dùng *"}
                       name="full_name"
                       defaultValue={formik.values.full_name}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
+                     
                     />
                     {formik.errors.full_name && formik.touched.full_name && (
                       <p className="msg_err">{formik.errors.full_name}</p>
@@ -114,8 +121,9 @@ export default function LoginForm() {
                         show={show}
                         onHide={() => setShow(false)}
                         ModalTile={''}
-                        ModalChildren={<Mapbox />}
+                        ModalChildren={<Mapbox onClose={onClose}/>}
                         size="xl"
+                        
                       />
                     </div>
                   </div>
@@ -125,7 +133,7 @@ export default function LoginForm() {
                   <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
                     Trở Về
                   </button>
-                  <button type="submit" className="btn login_btn">
+                  <button type="submit" disabled={!(formik.values.full_name && curraddName)}  className="btn login_btn">
                     Tiếp Theo
                   </button>
                 </div>

@@ -23,7 +23,10 @@ const HomeSidebar = () => {
   const [show, setShow] = useState(false)
 
   const [show2, setShow2] = useState(false)
-
+  const onClose =() => { 
+    setShow2(false)
+  
+}
   const conditionHostVote = React.useMemo(() => {
     return {
       fieldName: 'room_id',
@@ -53,6 +56,7 @@ const HomeSidebar = () => {
 
   const arrLocationVoteHost = useFirestore('locations', conditionHostVote)
   const arrLocationVoteClient = useFirestore('locations', conditionClientVote)
+  
 
   let listLocationVote = [...arrLocationVoteClient, ...arrLocationVoteHost]
   // console.log(listLocationVote)
@@ -102,7 +106,7 @@ const HomeSidebar = () => {
               show={show2}
               onHide={() => setShow2(false)}
               ModalTile={''}
-              ModalChildren={<MapboxLocationVote />}
+              ModalChildren={<MapboxLocationVote  onClose={onClose}/>}
               size="xl"
             />
           </div>
