@@ -35,7 +35,7 @@ function App() {
               <Route element={<GroupForm />} path="/create" />
               <Route element={<HomeSidebar />} path={'/room-vote/:id'} />
               <Route element={<AnnouncingVote />} path={'/announcingVote'} />
-              <Route element={<Home />} path={'/home'} />
+              <Route element={<Home />} path={'/home/*'} />
               <Route element={<ListRoom />} path={'/list-room'} />
             </Route>
             <Route path="*" element={<ErrorPage />} />

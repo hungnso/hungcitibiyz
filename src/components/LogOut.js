@@ -2,9 +2,11 @@ import React, { useRef, useContext } from 'react'
 import './styles.css'
 import { useOutsideClick } from './useOutsideClick'
 import { AuthContext } from '../Context/AuthProvider'
-import firebase from '../firebase/config'
+import firebase, { auth } from '../firebase/config'
+import { useNavigate } from 'react-router-dom'
 
 function LogOut() {
+  const navigate = useNavigate()
   const dropdownRef = useRef(null)
   const [isActive, setIsActive] = useOutsideClick(dropdownRef, false)
   const onClick = () => setIsActive(!isActive)
@@ -13,7 +15,10 @@ function LogOut() {
     user: { displayName, uid, photoURL }
   } = useContext(AuthContext)
 
-  const signOutUser = () => firebase.auth.signOut()
+  const signOutUser = () => {
+    auth.signOut()
+    navigate('/login')
+  }
 
   return (
     <div className="menu-container">
