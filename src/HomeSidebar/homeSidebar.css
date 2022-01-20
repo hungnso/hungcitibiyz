@@ -5,19 +5,6 @@
     /* padding-top: 20px; */
     overflow-y: scroll;
 }
-/* .go-back {
-    cursor: pointer;
-    position: relative;
-    background-color: #fff;
-    border-radius: 8px;
-    width: 95%;
-    height: 30px;
-    padding: 10px;
-    margin: 0 auto;
-    text-align: center;
-    line-height: 70px;
-    margin-top: 25px;
-} */
 
 .go-back {
     border-radius: 8px;
@@ -29,6 +16,8 @@
     cursor: pointer;
     width: 45%;
     height: 50px;
+    position: relative;
+    margin-bottom: 25px;
 }
 
 .go-back span {
@@ -36,7 +25,7 @@
     display: inline-block;
     position: relative;
     transition: 0.5s;
-    font-weight: bold;
+    font-size: 18px;
 }
 
 .go-back span:after {
@@ -73,10 +62,10 @@
     line-height: 70px;
     margin-top: 25px;
 }
-.home-sidebar-title h2 {
+.home-sidebar-title h3 {
     padding-top: 10px;
 }
-.home-sidebar-members, .home-sidebar-location {
+.home-sidebar-location {
     background-color: #FFFFFF;
     border-radius: 8px;
     width: 95%;
@@ -86,6 +75,9 @@
     margin-top: 25px;
     padding: 10px;
 }
+.home-sidebar-location span {
+    font-size: 15px;
+}
 .vote {
     display: flex;
     position: relative;
@@ -93,13 +85,14 @@
     align-items: center;
     cursor: pointer;
     justify-content: flex-start;
-    
 }
-.nameVote input {
-    margin-right: 10px;
-    height: 15px;
-    width: 15px;
+
+.vote input {
+    margin-left: 10px;
+    height: 35px;
+    width: 35px;
 }
+
 .vote h4:first-child {
     margin-top: 10px;
 }
@@ -117,10 +110,10 @@
     font-size:15px;
     margin-top: 10px;
 }
-.nameVote{
+.locationVote{
     margin-left:15px;
     margin-right:40px;
-    font-size:20px;
+    font-size: 20px;
 }
 .home-sidebar-location {
     background-color: #FFFFFF;
@@ -153,18 +146,36 @@
     margin-top: 55px;
     border-radius: 8px;
     border: 1px solid;
-    font-weight: bold;
+    font-size: 18px;
     background-color: #FFFFFF;
     position: relative;
     margin-bottom: 25px;
 }
-.btnLocation_share button {
-    width: 45%;
+
+.btnEndVote button:hover {
+    background-color: #f4511e;
+    color: #fff;
+    border: none;
+}
+
+.btnAddLocation button {
     height: 50px;
     margin-top: 25px;
     border-radius: 8px;
     border: 1px solid;
-    font-weight: bold;
+    font-weight: normal;
+    font-size: 18px;
+    background-color: #FFFFFF;
+    position: relative;
+}
+
+.btnShareLink button {
+    height: 50px;
+    margin-top: 25px;
+    border-radius: 8px;
+    border: 1px solid;
+    font-weight: normal;
+    font-size: 18px;
     background-color: #FFFFFF;
     position: relative;
 }

@@ -76,29 +76,25 @@ const HomeSidebar = () => {
         <div className="home-sidebar">
           
           <div className="home-sidebar-title">
-            <h2>{selectedRoomHost.title ? selectedRoomHost.title : selectedRoomClient.title}</h2>
+            <h3>{selectedRoomHost.title ? selectedRoomHost.title : selectedRoomClient.title}</h3>
           </div>
           <div className="home-sidebar-content">
-            <h2>{selectedRoomHost.description ? selectedRoomHost.description : selectedRoomClient.description}</h2>
+            <h3>{selectedRoomHost.description ? selectedRoomHost.description : selectedRoomClient.description}</h3>
           </div>
 
-          <div className="home-sidebar-members">
+          <div className="home-sidebar-location">
             {listLocationVote.map(location => (
               <div className="vote" key={location.id}>
-                <h4 className="nameVote">
-                  <input type="checkbox"></input>
+                <input type="checkbox"></input>
+                <span className="locationVote">
                   {location.location}
-                </h4>
+                </span>
                 <h5 className="quantilyVote">{location.num_vote}</h5>
               </div>
             ))}
           </div>
 
-          {/* <div className="home-sidebar-location">
-                      
-                  </div> */}
-
-          <div className="btnLocation_share">
+          <div className="btnAddLocation">
             <button style={{ width: '95%' }} onClick={() => setShow2(true)}>
               Thêm địa Chỉ
             </button>
@@ -111,7 +107,7 @@ const HomeSidebar = () => {
             />
           </div>
 
-          <div className="btnLocation_share">
+          <div className="btnShareLink">
             <button style={{ width: '95%' }} onClick={() => setShow(true)}>
               Chia Sẻ Link
             </button>
@@ -123,11 +119,13 @@ const HomeSidebar = () => {
               size="md"
             />
           </div>
+
           <div className="btnEndVote">
             <button type="submit" onClick={e => handleEndVote(e)}>
               Kết thúc
             </button>
           </div>
+
           <button class="go-back" onClick={handleGoBack}><span>Quay lại</span></button>
         </div>
       </div>
