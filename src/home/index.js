@@ -116,7 +116,7 @@ function Home() {
         >
           Chào mừng {displayName} đến với App Cùng Đi Chơi
         </h1>
-        <h3
+        {/* <h3
           style={{
             color: 'white',
             textTransform: 'uppercase',
@@ -124,7 +124,7 @@ function Home() {
           }}
         >
           Địa chỉ hiện tại của bạn là :{' '}
-        </h3>
+        </h3> */}
         <Row>
           <Col lg={3}></Col>
           <Col lg={6}>

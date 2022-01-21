@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 import './homeSidebar.css'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -23,6 +23,7 @@ const HomeSidebar = () => {
   const [show, setShow] = useState(false)
 
   const [show2, setShow2] = useState(false)
+
   const [listAdd, setListAdd] = useState([])
 
   const [valueRoom, setValueRoom] = useState({})
@@ -92,7 +93,7 @@ const HomeSidebar = () => {
     navigate(-1)
   }
   /// Lấy ra danh sách người dùng có trong phòng
-  console.log(valueRoom)
+  // console.log(valueRoom)
   const usersCondition = React.useMemo(() => {
     return {
       fieldName: 'uid',
@@ -102,7 +103,11 @@ const HomeSidebar = () => {
   }, [valueRoom.member])
 
   const memberList = useFirestore('users', usersCondition)
-  console.log(memberList)
+  console.log('memberList', memberList)
+
+  // useEffect(() => {
+  //   setMember(memberList)
+  // }, [setMember]);
 
   const handleEndVote = e => {
     e.preventDefault()
@@ -140,9 +145,15 @@ const HomeSidebar = () => {
               </div>
             ))}
           </div>
-          {/* <div className="home-sidebar-location">
-                      
-                  </div> */}
+          <div className="home-sidebar-member">
+            {memberList.map(member => (
+              <div className="vote" key={member.uid}>
+                <span className="nameVote">
+                  {valueRoom.member}
+                </span>
+              </div>
+            ))}
+          </div>
 
           <div className="btnAddLocation">
             <button style={{ width: '95%' }} onClick={() => setShow2(true)}>

@@ -11,6 +11,7 @@ export default function AppProvider({ children }) {
   const [selectedRoomId, setSelectedRoomId] = useState('')
   const [locationVote, setLocationVote] = useState([])
   const [list, setList] = useState([])
+  const [members, setMember] = useState([])
 
   const { user } = React.useContext(AuthContext)
 

@@ -85,6 +85,7 @@
     border-radius: 8px;
     align-items: center;
     cursor: pointer;
+    min-height: 50px;
     justify-content: flex-start;
 }
 
@@ -179,7 +180,7 @@
     position: relative;
 }
 
-.listPeople {
+.listClient {
     position: absolute;
     width: 150px;
     height: 40px;

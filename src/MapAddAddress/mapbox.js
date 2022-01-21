@@ -106,7 +106,7 @@ function Mapbox({ setShow,onClose }) {
   return (
     <div>
       <div className="container_map">
-        <div style={{ height: '90vh' }}>
+        <div style={{}}>
           <div className="mapbox">
             <ReactMapGL
               ref={mapRef}
@@ -145,7 +145,7 @@ function Mapbox({ setShow,onClose }) {
           </div>
         </div>
       </div>
-      <button type="submit" className="btnAdd"   onClick={e =>handleSubmitLocation(e)}>
+      <button type="submit" className="btnAdd" onClick={e =>handleSubmitLocation(e)}>
         Thêm địa điểm
       </button>
     </div>

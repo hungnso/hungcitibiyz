@@ -3,7 +3,12 @@ import Mapbox from './mapbox'
 import HomeSidebar from './homeSidebar'
 import './homeSidebar.css'
 import LogOut from '../components/LogOut'
+import { useState } from 'react'
+
 function Home() {
+  
+  // const [client, setClient] = useState([])
+
   return (
     <div className="homeView">
       <LogOut />

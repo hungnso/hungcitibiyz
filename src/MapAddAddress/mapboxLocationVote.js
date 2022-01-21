@@ -9,7 +9,7 @@ import './style.css'
 import { AppContext } from '../Context/AppProvider'
 import useFirestore from '../hooks/useFirestore'
 
-function MapboxLocationVote({ setShow ,onClose}) {
+function MapboxLocationVote({ setShow, onClose }) {
   const { curraddName, setCurrAddName, setLocationVote } = useContext(AppContext)
 
   // Token
@@ -84,7 +84,7 @@ function MapboxLocationVote({ setShow ,onClose}) {
     SetnameAddress(location.result.place_name)
   }
 
-//Kiểm tra tồn tại địa chỉ chưa
+  //Kiểm tra tồn tại địa chỉ chưa
 
   const { selectedRoomHost, selectedRoomClient } = React.useContext(AppContext)
   const conditionHostVote = React.useMemo(() => {
@@ -103,40 +103,36 @@ function MapboxLocationVote({ setShow ,onClose}) {
   }, [selectedRoomClient.id])
   const arrLocationVoteHost = useFirestore('locations', conditionHostVote)
   const arrLocationVoteClient = useFirestore('locations', conditionClientVote)
-  
 
   let listLocationVote = [...arrLocationVoteClient, ...arrLocationVoteHost]
 
-  
-
-  const isAddressHome = () =>{
-    for(let i=0; i<listLocationVote.length; i++) {
-      if(listLocationVote[i].location == nameAddress){
+  const isAddressHome = () => {
+    for (let i = 0; i < listLocationVote.length; i++) {
+      if (listLocationVote[i].location == nameAddress) {
         return true
         break
-      }else{
+      } else {
         return false
       }
     }
   }
-  
 
   // Submit location
 
   const { locationVote } = React.useContext(AppContext)
-  const isAddress = () =>{
-    for(let i=0; i<locationVote.length; i++) {
-      if(locationVote[i] == nameAddress){
+  const isAddress = () => {
+    for (let i = 0; i < locationVote.length; i++) {
+      if (locationVote[i] == nameAddress) {
         return true
         break
-      }else{
+      } else {
         return false
       }
     }
   }
 
-  var handleSubmitLocation = (e) => {
-    e.preventDefault();
+  var handleSubmitLocation = e => {
+    e.preventDefault()
     console.log(marker.latitude)
     console.log(marker.longitude)
     console.log(nameAddress)
@@ -148,13 +144,12 @@ function MapboxLocationVote({ setShow ,onClose}) {
     //   }
     // }
   }
-  const handleSubmitLocation2 =(e) =>{
-    if(isAddress()){
+  const handleSubmitLocation2 = e => {
+    if (isAddress()) {
       alert('Đã tồn tại địa chỉ này')
-    }else if(isAddressHome()){
+    } else if (isAddressHome()) {
       alert('Đã tồn tại địa chỉ này')
-    }
-    else{
+    } else {
       handleSubmitLocation(e)
     }
   }
@@ -202,7 +197,7 @@ function MapboxLocationVote({ setShow ,onClose}) {
           </div>
         </div>
       </div>
-      <button className="btnAdd" onClick={e =>handleSubmitLocation2(e)}>
+      <button className="btnAdd" onClick={e => handleSubmitLocation2(e)}>
         Thêm địa điểm
       </button>
     </div>
