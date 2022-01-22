@@ -15,22 +15,36 @@ import { query, orderBy, where,limit } from "firebase/firestore";
 
 const HomeSidebar = ({ setCurrRoom }) => {
   const navigate = useNavigate()
-  const { selectedRoomHost, selectedRoomClient, locationVote, setLocationVote, selectedRoomId, setList } =
-    React.useContext(AppContext)
+  const {
+    selectedRoomHost,
+    locationVote,
+    setLocationVote,
+    selectedRoomId,
+    setSelectedRoomId,
+    setList,
+    setCurrLocation,
+    setNickname
+  } = React.useContext(AppContext)
+  // console.log(selectedRoomHost)
   const params = useParams()
   const {
     user: { uid }
   } = React.useContext(AuthContext)
+  // console.log(uid)
 
   const [show, setShow] = useState(false)
 
   const [show2, setShow2] = useState(false)
+
   const [listAdd, setListAdd] = useState([])
 
   const [valueRoom, setValueRoom] = useState({})
+
   const onClose = () => {
     setShow2(false)
   }
+
+  /// Lấy ra danh sách địa điểm vote
   const conditionVote = React.useMemo(() => {
     return {
       fieldName: 'room_id',
@@ -38,9 +52,14 @@ const HomeSidebar = ({ setCurrRoom }) => {
       compareValue: params.id
     }
   }, [params.id])
-
- 
-
+  //// Kiểm tra host để end Vote
+  const conditionEndVote = React.useMemo(() => {
+    return {
+      fieldName: 'user_id',
+      operator: '==',
+      compareValue: uid
+    }
+  }, [uid])
   // const conditionHostVote = React.useMemo(() => {
   //   return {
   //     fieldName: 'room_id',
@@ -83,21 +102,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
     })
   }, [locationVote, params.id, uid, setLocationVote])
 
-  // useEffect(() => {
-  //   listAdd.map(location => {
-  //     let locationId = location.id
-  //     let locationItem = db.collection('locations').doc(locationId)
-  //     locationItem
-  //       .get()
-  //       .then(doc => {
-  //         let voteUsers = doc.data().vote_users
-  //         voteUsers.include
-  //       })
-  //       .catch(error => {
-  //         console.log('Error getting document:', error)
-  //       })
-  //   })
-  // }, [])
+  const listRoomHost = useFirestore('rooms', conditionEndVote)
+  const isHost = listRoomHost.find(value => value.id === params.id)
 
 
   
@@ -125,14 +131,14 @@ const HomeSidebar = ({ setCurrRoom }) => {
   }, [arrLocationVoteHost, setList])
 
   const handleGoBack = () => {
-    navigate(-1)
+    navigate('/')
   }
 
 
 
   const dulieu =db.collection("locations")
   const Abc =() =>{
-    dulieu.where('room_id' ,'==',selectedRoomId).orderBy('num_vote','desc').limit(1).get().then((querySnapshot) => {
+    dulieu.where('room_id' ,'==',params.id).orderBy('num_vote','desc').limit(1).get().then((querySnapshot) => {
        querySnapshot.forEach((doc) => {
            console.log(doc.data())
            
@@ -148,30 +154,36 @@ const HomeSidebar = ({ setCurrRoom }) => {
   // console.log(valueRoom)
   const usersCondition = React.useMemo(() => {
     return {
-      fieldName: 'uid',
-      operator: 'in',
-      compareValue: valueRoom.member
+      fieldName: 'room_id',
+      operator: '==',
+      compareValue: params.id
     }
-  }, [valueRoom.member])
+  }, [params.id])
 
-  const memberList = useFirestore('users', usersCondition)
-  // console.log(memberList)
+  const listMember = useFirestore('user_room', usersCondition)
+  const memberList = listMember.slice(1)
+  console.log(memberList)
+  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
+  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
 
   setCurrRoom(valueRoom)
+  // const handleEndVote = e => {
+  //   e.preventDefault()
+  //   if (!selectedRoomHost.title) {
+  //     Abc()
+  //   } else {
+      
+  //     Abc()
+  //     // navigate('/announcingVote')
+      
+      
+  //   }
+  // }
+  
   const handleEndVote = e => {
-    e.preventDefault()
-    if (!selectedRoomHost.title) {
-      alert('Chỉ người tạo phòng mới đc end')
+      e.preventDefault()
       Abc()
-    } else {
-      
-      Abc()
-      // navigate('/announcingVote')
-      
-      
     }
-  }
-
   const handleCheckBox = e => {
     const locationId = e.target.value
     // Create a reference to the locationId doc.
@@ -207,7 +219,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
           }
         })
       })
-      .then(() => { })
+      .then(() => {})
       .catch(error => {
         console.log('Transaction failed: ', error)
       })
@@ -225,25 +237,34 @@ const HomeSidebar = ({ setCurrRoom }) => {
             <h2>{valueRoom.description}</h2>
           </div>
 
-          <div className="home-sidebar-members">
+          <div className="home-sidebar-location">
             {listAdd.map(location => (
               <div className="vote" key={location.id}>
-                <h4 className="nameVote">
+                <span className="nameVote">
                   <input
                     type="checkbox"
                     value={location.id}
                     onChange={e => handleCheckBox(e)}
-                  // checked={location => (location.vote_users.includes(uid) ? true : false)}
+                    // checked={location => (location.vote_users.includes(uid) ? true : false)}
                   ></input>
                   {location.location}
-                </h4>
+                </span>
                 <h5 className="quantilyVote">{location.num_vote}</h5>
               </div>
             ))}
           </div>
-          {/* <div className="home-sidebar-location">
-                      
-                  </div> */}
+          <div className="home-sidebar-member">
+            {memberList?.map(member => (
+              <div className="vote" key={member.uid}>
+                <img src={member.avatar}></img>
+                <span className="nameVote">
+                  {member.nickname}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          
 
           <div className="btnLocation_share">
             <button style={{ width: '95%' }} onClick={() => setShow2(true)}>
@@ -257,7 +278,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
               size="xl"
             />
           </div>
-          <div className="btnLocation_share">
+
+          <div className="btnShareLink">
             <button style={{ width: '95%' }} onClick={() => setShow(true)}>
               Chia Sẻ Link
             </button>
@@ -269,10 +291,15 @@ const HomeSidebar = ({ setCurrRoom }) => {
               size="md"
             />
           </div>
+
           <div className="btnEndVote">
-            <button type="submit" onClick={e => handleEndVote(e)}>
-              END VOTE
-            </button>
+            {isHost?.title ? (
+              <button type="submit" onClick={e => handleEndVote(e)}>
+                Kết thúc
+              </button>
+            ) : (
+              ''
+            )}
           </div>
           <button className="go-back" onClick={handleGoBack}>
             <span>Quay lại</span>

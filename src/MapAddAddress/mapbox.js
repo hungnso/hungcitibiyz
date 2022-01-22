@@ -92,8 +92,9 @@ function Mapbox({ setShow, onClose }) {
     console.log(marker.latitude)
     console.log(marker.longitude)
     console.log(nameAddress)
-    
-    
+    setCurrAddName(nameAddress)
+
+    console.log(curraddName)
     // setLocationVote(prev => [...prev, nameAddress])
     if(!locationVote){
       setCurrAddName(nameAddress)

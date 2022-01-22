@@ -144,11 +144,11 @@ function MapboxLocationVote({ setShow, onClose }) {
   }
   const handleSubmitLocation2 = e => {
     if (isAddress()) {
-      alert('đã tồn tại Địa chỉ này')
+      alert('Đã tồn tại địa chỉ này')
     } else if (isAddressHome()) {
-      alert('đã tồn tại Địa chỉ này')
+      alert('Đã tồn tại địa chỉ này')
     }else if(locationVote.length>4){
-      alert('4')
+      alert('Số địa điểm chỉ được tối đa 5')
     } else {
       handleSubmitLocation(e)
     }

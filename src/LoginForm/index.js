@@ -15,32 +15,16 @@ import LogOut from '../components/LogOut'
 
 export default function LoginForm() {
   let navigate = useNavigate()
-  const { curraddName, selectedRoomId } = useContext(AppContext)
-  const [nickname, setNickName] = React.useState('')
+  const { curraddName, selectedRoomId, setCurrLocation, nickname, setNickName } = useContext(AppContext)
   const { roomClient } = useContext(AppContext)
 
-  // React.useEffect(() => {
-  //   db.collection('users').onSnapshot(snapshot => {
-  //     const data = snapshot.docs.map(doc => ({
-  //       ...doc.data(),
-  //       id: doc.id
-  //     }))
-  //     console.log({ data, snapshot, docs: snapshot.docs })
-  //   })
-  // }, [])
-
   const [show, setShow] = useState(false)
-
-  const handleCLick = e => {
-    e.preventDefault()
-    // navigate('/create')
-  }
 
   const handleGoBack = () => {
     navigate(-1)
   }
   const {
-    user: { displayName, uid }
+    user: { displayName, uid, photoURL }
   } = useContext(AuthContext)
 
   const onClose = () => {
@@ -57,96 +41,115 @@ export default function LoginForm() {
         .required('Tên Không Được Để Trống!')
     }),
     onSubmit: values => {
-      console.log(values)
-      setNickName(values.full_name)
+      const { full_name } = values
+      setCurrLocation(curraddName)
       console.log(curraddName)
-      addDocument('user_room', {
-        currentLocation: curraddName,
-        nickname: values.full_name,
-        user_id: uid
-      })
-      console.log(selectedRoomId)
+      setNickName(full_name)
+
+      // addDocument('user_room', {
+      //   currentLocation: curraddName,
+      //   nickname: values.full_name,
+      //   user_id: uid
+      // })
+      // console.log(selectedRoomId)
       selectedRoomId ? navigate(`/room-vote/${selectedRoomId}`) : navigate('/create')
+      if (selectedRoomId) {
+        addDocument('user_room', {
+          currentLocation: curraddName,
+          nickname: values.full_name,
+          user_id: uid,
+          avatar: photoURL,
+          room_id: selectedRoomId
+        })
+      }
     }
   })
 
   return (
-    <div className="login_form">
+    <div className="add_form">
       <div className="krqetT"></div>
       <div className="ifKAln"></div>
       <LogOut />
       <Container>
-        <h1
-          style={{
-            color: 'white',
-            textTransform: 'uppercase',
-            textAlign: 'center'
-          }}
-        >
-          Chào mừng {displayName} đến với App Cùng Đi Chơi
-        </h1>
-        <Row>
-          <Col lg={3}></Col>
-          <Col lg={6}>
-            <form onSubmit={formik.handleSubmit}>
-              <div className="login_wrapper">
-                <div className="formsix-pos">
-                  <div className="form-group">
-                    <InputForm
-                      type="text"
-                      id="Text1"
-                      placeholder={formik.values.full_name ? formik.values.full_name : 'Tên Người Dùng *'}
-                      name="full_name"
-                      defaultValue={formik.values.full_name}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                    {formik.errors.full_name && formik.touched.full_name && (
-                      <p className="msg_err">{formik.errors.full_name}</p>
-                    )}
-                  </div>
-                </div>
-                <div className="formsix-e">
-                  <div className="form-group">
-                    <div className="address_vote">
-                      <div className="">{curraddName}</div>
-                      <div
-                        className="btn_address"
-                        onClick={e => {
-                          e.preventDefault()
-                          setShow(true)
-                        }}
-                      >
-                        {curraddName ? 'Sửa địa chỉ' : 'Nhập địa chỉ của bạn'}
-                      </div>
-                      <ModalForm
-                        show={show}
-                        onHide={() => setShow(false)}
-                        ModalTile={''}
-                        ModalChildren={<Mapbox onClose={onClose} />}
-                        size="xl"
+        <div className="form_bg">
+          <Row>
+            <Col lg={5} className="form_left">
+              <h1
+                style={{
+                  color: '#000',
+                  textTransform: 'uppercase',
+                  textAlign: 'center',
+                  padding: '10px',
+                  fontSize: '28px'
+                }}
+              >
+                Chào mừng {displayName} đến với App Cùng Đi Chơi
+              </h1>
+              <form onSubmit={formik.handleSubmit}>
+                <div className="login_wrapper">
+                  <div className="formsix-pos">
+                    <div className="form-group">
+                      <InputForm
+                        type="text"
+                        id="Text1"
+                        placeholder={formik.values.full_name ? formik.values.full_name : 'Tên Người Dùng *'}
+                        name="full_name"
+                        defaultValue={formik.values.full_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
+                      {formik.errors.full_name && formik.touched.full_name && (
+                        <p className="msg_err">{formik.errors.full_name}</p>
+                      )}
                     </div>
                   </div>
-                </div>
+                  <div className="formsix-e">
+                    <div className="form-group">
+                      <div className="address_vote">
+                        <div className="">{curraddName}</div>
+                        <div
+                          className="btn_address"
+                          onClick={e => {
+                            e.preventDefault()
+                            setShow(true)
+                          }}
+                        >
+                          {curraddName ? 'Sửa địa chỉ' : 'Nhập địa chỉ của bạn'}
+                        </div>
+                        <ModalForm
+                          show={show}
+                          onHide={() => setShow(false)}
+                          ModalTile={''}
+                          ModalChildren={<Mapbox onClose={onClose} />}
+                          size="xl"
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-                <div className="login_btn_wrapper">
-                  <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
-                    Trở Về
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn login_btn"
-                    disabled={!(formik.isValid && formik.dirty && curraddName.length != 0)}
-                  >
-                    Tiếp Theo
-                  </button>
+                  <div className="login_btn_wrapper">
+                    <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
+                      Trở Về
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn login_btn"
+                      disabled={!(formik.isValid && formik.dirty && curraddName.length != 0)}
+                    >
+                      Tiếp Theo
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </form>
-          </Col>
-          <Col lg={3}></Col>
-        </Row>
+              </form>
+            </Col>
+            <Col lg={7} className="div_bg">
+              <img
+                src={'http://moitruongdulich.vn/mypicture/images/2020/CNMN42020/185ISO-21401.jpg'}
+                className="img_bg"
+              />
+            </Col>
+          </Row>
+        </div>
       </Container>
     </div>
   )

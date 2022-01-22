@@ -16,12 +16,23 @@ function Home() {
   const {
     user: { uid, displayName }
   } = useContext(AuthContext)
-  const { roomClient, roomHost, setSelectedRoomId, selectedRoomHost, selectedRoomClient } = useContext(AppContext)
+  const {
+    roomClient,
+    roomHost,
+    setSelectedRoomId,
+    selectedRoomHost,
+    selectedRoomClient,
+    setCurrLocation,
+    setCurrAddName
+  } = useContext(AppContext)
   const [hasFocus, setFocus] = useState(false)
 
   const navigate = useNavigate()
   const handleCLick = e => {
     e.preventDefault()
+    setCurrLocation('')
+
+    setCurrAddName('')
     navigate('/contact')
   }
  
@@ -51,12 +62,12 @@ function Home() {
   const currAddHost = useCurrAdd('user_room', conditionHost, conditonUser)
   const currAddClient = useCurrAdd('user_room', conditionClient, conditonUser)
 
-  React.useEffect(() => {
-    // console.log(currAddHost)
-  }, [currAddHost])
-  React.useEffect(() => {
-    console.log(currAddClient)
-  }, [currAddClient])
+  // React.useEffect(() => {
+  //   // console.log(currAddHost)
+  // }, [currAddHost])
+  // React.useEffect(() => {
+  //   console.log(currAddClient)
+  // }, [currAddClient])
 
   const handleJoinRoom = value => {
     console.log(value)
@@ -89,7 +100,7 @@ function Home() {
 
           setSelectedRoomId(values.content)
 
-          navigate(`/room-vote/${values.content}`)
+          navigate(`/contact`)
         } else {
           // doc.data() will be undefined in this case
           alert('Phòng này không tồn tại')
@@ -157,8 +168,8 @@ function Home() {
         <div className="tab-content">
           <h2>Các Phòng Bạn Đã Tạo Bình Chọn</h2>
           {roomHost.map(room => (
-            <div className="list_room">
-              <button key={room.id} className="btn_address" onClick={() => handleJoinRoom(room.id)}>
+            <div className="list_room" key={room.id}>
+              <button className="btn_address" onClick={() => handleJoinRoom(room.id)}>
                 {room.title}
               </button>
               <button className="login_btn" onClick={handleDelete} style={{ marginTop: '20px', marginLeft: '20px' }}>
@@ -176,8 +187,8 @@ function Home() {
         <div className="tab-content">
           <h2>Các Phòng Bạn Đã Tham Gia</h2>
           {roomClient.map(room => (
-            <div className="list_room">
-              <button key={room.id} className="btn_address" onClick={() => handleJoinRoom(room.id)}>
+            <div className="list_room" key={room.id}>
+              <button className="btn_address" onClick={() => handleJoinRoom(room.id)}>
                 {room.title}
               </button>
               <button className="login_btn" onClick={handleDelete} style={{ marginTop: '20px', marginLeft: '20px' }}>
