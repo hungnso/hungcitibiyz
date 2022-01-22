@@ -64,7 +64,7 @@
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .form-group input {
@@ -112,8 +112,9 @@
 }
 .msg_err {
   color: #d41a1a;
-  font-size: 12px;
-  margin: 20px 0 8px 0;
+  font-size: 11px;
+  position: absolute;
+  bottom: -32px;
 }
 button.btn_address {
   color: #fff;
@@ -142,21 +143,6 @@ button.btn_address {
   outline: none;
   cursor: pointer;
   margin-top: 20px;
-}
-.facebook,
-.google {
-  color: #fff;
-  border: none;
-  font-size: 18px;
-  padding: 10px;
-  line-height: 30px;
-  border-radius: 8px;
-}
-.facebook {
-  background-color: #3B5998;
-}
-.google {
-  background-color: #cf4332;
 }
 .icon_social {
   width: 30px;
