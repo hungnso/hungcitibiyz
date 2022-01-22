@@ -78,22 +78,6 @@ const HomeSidebar = ({ setCurrRoom }) => {
     })
   }, [locationVote, params.id, uid, setLocationVote])
 
-  // useEffect(() => {
-  //   listAdd.map(location => {
-  //     let locationId = location.id
-  //     let locationItem = db.collection('locations').doc(locationId)
-  //     locationItem
-  //       .get()
-  //       .then(doc => {
-  //         let voteUsers = doc.data().vote_users
-  //         voteUsers.include
-  //       })
-  //       .catch(error => {
-  //         console.log('Error getting document:', error)
-  //       })
-  //   })
-  // }, [])
-
   const arrLocationVoteHost = useFirestore('locations', conditionVote)
   React.useMemo(() => {
     let listLocationVote = [...arrLocationVoteHost]
@@ -137,14 +121,6 @@ const HomeSidebar = ({ setCurrRoom }) => {
     const locationId = e.target.value
     // Create a reference to the locationId doc.
     const locationItem = db.collection('locations').doc(locationId)
-    locationItem
-      .get()
-      .then(doc => {
-        console.log('Document data:', doc.data().vote_users)
-      })
-      .catch(error => {
-        console.log('Error getting document:', error)
-      })
 
     return db
       .runTransaction(transaction => {
@@ -154,17 +130,16 @@ const HomeSidebar = ({ setCurrRoom }) => {
             // eslint-disable-next-line no-throw-literal
             throw 'Document does not exist!'
           }
-          let numVote = sfDoc.data().num_vote
-          // let voteUsers = sfDoc.data().vote_users
+          let numVote = sfDoc.data().vote_users.length
+          let voteUsers = sfDoc.data().vote_users
           if (e.target.checked) {
-            console.log(true)
             transaction.update(locationItem, { num_vote: numVote + 1 })
-            // transaction.update(locationItem, { vote_users: voteUsers.push(uid) })
+            voteUsers.push(uid)
+            transaction.update(locationItem, { vote_users: voteUsers })
           } else {
-            console.log(false)
             transaction.update(locationItem, { num_vote: numVote - 1 })
-            // let newVoteUsers = voteUsers.splice(voteUsers.indexOf('c'), 1)
-            // transaction.update(locationItem, { vote_users: newVoteUsers })
+            voteUsers.splice(voteUsers.indexOf(uid), 1)
+            transaction.update(locationItem, { vote_users: voteUsers })
           }
         })
       })
@@ -194,18 +169,15 @@ const HomeSidebar = ({ setCurrRoom }) => {
                   <input
                     type="checkbox"
                     value={location.id}
-                    onChange={e => handleCheckBox(e)}
-                  // checked={location => (location.vote_users.includes(uid) ? true : false)}
+                    onClick={e => handleCheckBox(e)}
+                    defaultChecked={location.vote_users.includes(uid)}
                   ></input>
                   {location.location}
                 </h4>
-                <h5 className="quantilyVote">{location.num_vote}</h5>
+                <h5 className="quantilyVote">{location.vote_users.length}</h5>
               </div>
             ))}
           </div>
-          {/* <div className="home-sidebar-location">
-                      
-                  </div> */}
 
           <div className="btnLocation_share">
             <button style={{ width: '95%' }} onClick={() => setShow2(true)}>
@@ -227,7 +199,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
               show={show}
               onHide={() => setShow(false)}
               ModalTile={''}
-              ModalChildren={<PopupForm value={`http://localhost:3000/${selectedRoomId}`} />}
+              // ModalChildren={<PopupForm value={`http://localhost:3000/${selectedRoomId}`} />}
+              ModalChildren={<PopupForm value={window.Headers} />}
               size="md"
             />
           </div>
