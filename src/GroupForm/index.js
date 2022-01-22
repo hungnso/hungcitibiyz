@@ -20,7 +20,8 @@ function GroupForm() {
   const {
     user: { uid, photoURL }
   } = React.useContext(AuthContext)
-  const { locationVote, setLocationVote, curraddName, setCurrAddName, nickname, currLocation } = React.useContext(AppContext)
+  const { locationVote, setLocationVote, curraddName, setCurrAddName, nickname, currLocation } =
+    React.useContext(AppContext)
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
@@ -92,10 +93,7 @@ function GroupForm() {
     }
   })
 
-
-
-
-  const onDelete = (value) => {
+  const onDelete = value => {
     //  db.child(`location/${value}`).remove();
     console.log(locationVote)
     // const item = locationVot
@@ -103,18 +101,15 @@ function GroupForm() {
     for (let i = 0; i < locationVote.length; i++) {
       if (locationVote[i] === value) {
         locationVote.splice(i, 1)
-        break;
+        break
       }
     }
     setLocationVote([...locationVote])
-
 
     // const deleteAddress = firebase.database().ref('user_room').child(locationVote.id)
     // const item = locationVote.pop();
     // console.log(locationVote)
     // setLocationVote(item =>[...item])
-
-
 
     // deleteAddress.remove()
     // locationVote.remove()
@@ -186,15 +181,16 @@ function GroupForm() {
 
                   <div className="address_vote">
                     {locationVote.map((value, index) => (
-                      <div className="location_adrress" key={index} >
+                      <div className="location_adrress" key={index}>
                         <button type="button" className="btn_address" onClick={() => setShow(true)}>
                           {value}
                         </button>
-                        <button type="button" onClick={() => onDelete(`${value}`)} className='btn_delete_address'> <span className="icon_delete">X</span>  </button>
-
+                        <button type="button" onClick={() => onDelete(`${value}`)} className="btn_delete_address">
+                          {' '}
+                          <span className="icon_delete">X</span>{' '}
+                        </button>
                       </div>
                     ))}
-
 
                     <ModalForm
                       show={show}

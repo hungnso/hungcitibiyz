@@ -10,8 +10,7 @@ import { addDocument } from '../firebase/services'
 import { AuthContext } from '../Context/AuthProvider'
 import { db } from '../firebase/config'
 import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
-import { query, orderBy, where, limit } from "firebase/firestore";
-
+import { query, orderBy, where, limit } from 'firebase/firestore'
 
 const HomeSidebar = ({ setCurrRoom }) => {
   const navigate = useNavigate()
@@ -201,7 +200,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
           }
         })
       })
-      .then(() => { })
+      .then(() => {})
       .catch(error => {
         console.log('Transaction failed: ', error)
       })
@@ -243,8 +242,6 @@ const HomeSidebar = ({ setCurrRoom }) => {
               </div>
             ))}
           </div>
-
-
 
           <div className="btnLocation_share">
             <button style={{ width: '95%' }} onClick={() => setShow2(true)}>
