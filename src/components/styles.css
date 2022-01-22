@@ -52,9 +52,9 @@
   /* log out */
   .menu-container {
     position: absolute;
-    top: 40px;
-    right: 40px;
-    z-index: 2;
+    top: 25px;
+    right: 30px;
+    z-index: 5;
   }
   .menu-trigger {
     background: #ffffff;
