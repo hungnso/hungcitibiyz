@@ -13,12 +13,22 @@ import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
 
 const HomeSidebar = ({ setCurrRoom }) => {
   const navigate = useNavigate()
-  const { selectedRoomHost, selectedRoomClient, locationVote, setLocationVote, selectedRoomId, setList } =
-    React.useContext(AppContext)
+  const {
+    selectedRoomHost,
+    locationVote,
+    setLocationVote,
+    selectedRoomId,
+    setSelectedRoomId,
+    setList,
+    setCurrLocation,
+    setNickname
+  } = React.useContext(AppContext)
+  // console.log(selectedRoomHost)
   const params = useParams()
   const {
     user: { uid }
   } = React.useContext(AuthContext)
+  // console.log(uid)
 
   const [show, setShow] = useState(false)
 
@@ -29,6 +39,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
   const onClose = () => {
     setShow2(false)
   }
+
+  /// Lấy ra danh sách địa điểm vote
   const conditionVote = React.useMemo(() => {
     return {
       fieldName: 'room_id',
@@ -36,6 +48,14 @@ const HomeSidebar = ({ setCurrRoom }) => {
       compareValue: params.id
     }
   }, [params.id])
+  //// Kiểm tra host để end Vote
+  const conditionEndVote = React.useMemo(() => {
+    return {
+      fieldName: 'user_id',
+      operator: '==',
+      compareValue: uid
+    }
+  }, [uid])
   // const conditionHostVote = React.useMemo(() => {
   //   return {
   //     fieldName: 'room_id',
@@ -78,6 +98,9 @@ const HomeSidebar = ({ setCurrRoom }) => {
     })
   }, [locationVote, params.id, uid, setLocationVote])
 
+  const listRoomHost = useFirestore('rooms', conditionEndVote)
+  const isHost = listRoomHost.find(value => value.id === params.id)
+
   const arrLocationVoteHost = useFirestore('locations', conditionVote)
   React.useMemo(() => {
     let listLocationVote = [...arrLocationVoteHost]
@@ -92,7 +115,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
   }, [arrLocationVoteHost, setList])
 
   const handleGoBack = () => {
-    navigate(-1)
+    navigate('/')
   }
   /// Lấy ra danh sách người dùng có trong phòng
   // console.log(valueRoom)
@@ -205,9 +228,13 @@ const HomeSidebar = ({ setCurrRoom }) => {
             />
           </div>
           <div className="btnEndVote">
-            <button type="submit" onClick={e => handleEndVote(e)}>
-              END VOTE
-            </button>
+            {isHost?.title ? (
+              <button type="submit" onClick={e => handleEndVote(e)}>
+                ENDVOTE
+              </button>
+            ) : (
+              ''
+            )}
           </div>
           <button className="go-back" onClick={handleGoBack}>
             <span>Quay lại</span>
