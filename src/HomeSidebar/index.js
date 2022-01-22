@@ -3,11 +3,10 @@ import Mapbox from './mapbox'
 import HomeSidebar from './homeSidebar'
 import './homeSidebar.css'
 import LogOut from '../components/LogOut'
-// import { useState } from 'react'
-
+import { useParams } from 'react-router-dom'
 function Home() {
   const [currRoom, setCurrRoom] = useState()
-  console.log(currRoom)
+  const params = useParams()
   return (
     <div className="homeView">
       <LogOut />
@@ -15,7 +14,7 @@ function Home() {
         <HomeSidebar setCurrRoom={setCurrRoom} />
       </div>
       <div className="maps">
-        <Mapbox member={currRoom} />
+        <Mapbox currRoom={currRoom} params={params.id} />
       </div>
     </div>
   )

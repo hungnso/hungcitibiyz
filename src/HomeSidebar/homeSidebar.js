@@ -13,12 +13,22 @@ import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
 
 const HomeSidebar = ({ setCurrRoom }) => {
   const navigate = useNavigate()
-  const { selectedRoomHost, selectedRoomClient, locationVote, setLocationVote, selectedRoomId, setList } =
-    React.useContext(AppContext)
+  const {
+    selectedRoomHost,
+    locationVote,
+    setLocationVote,
+    selectedRoomId,
+    setSelectedRoomId,
+    setList,
+    setCurrLocation,
+    setNickname
+  } = React.useContext(AppContext)
+  // console.log(selectedRoomHost)
   const params = useParams()
   const {
     user: { uid }
   } = React.useContext(AuthContext)
+  // console.log(uid)
 
   const [show, setShow] = useState(false)
 
@@ -32,6 +42,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
     setShow2(false)
   }
 
+  /// Lấy ra danh sách địa điểm vote
   const conditionVote = React.useMemo(() => {
     return {
       fieldName: 'room_id',
@@ -39,6 +50,14 @@ const HomeSidebar = ({ setCurrRoom }) => {
       compareValue: params.id
     }
   }, [params.id])
+  //// Kiểm tra host để end Vote
+  const conditionEndVote = React.useMemo(() => {
+    return {
+      fieldName: 'user_id',
+      operator: '==',
+      compareValue: uid
+    }
+  }, [uid])
   // const conditionHostVote = React.useMemo(() => {
   //   return {
   //     fieldName: 'room_id',
@@ -81,21 +100,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
     })
   }, [locationVote, params.id, uid, setLocationVote])
 
-  // useEffect(() => {
-  //   listAdd.map(location => {
-  //     let locationId = location.id
-  //     let locationItem = db.collection('locations').doc(locationId)
-  //     locationItem
-  //       .get()
-  //       .then(doc => {
-  //         let voteUsers = doc.data().vote_users
-  //         voteUsers.include
-  //       })
-  //       .catch(error => {
-  //         console.log('Error getting document:', error)
-  //       })
-  //   })
-  // }, [])
+  const listRoomHost = useFirestore('rooms', conditionEndVote)
+  const isHost = listRoomHost.find(value => value.id === params.id)
 
   const arrLocationVoteHost = useFirestore('locations', conditionVote)
   React.useMemo(() => {
@@ -111,19 +117,20 @@ const HomeSidebar = ({ setCurrRoom }) => {
   }, [arrLocationVoteHost, setList])
 
   const handleGoBack = () => {
-    navigate(-1)
+    navigate('/')
   }
   /// Lấy ra danh sách người dùng có trong phòng
   // console.log(valueRoom)
   const usersCondition = React.useMemo(() => {
     return {
-      fieldName: 'uid',
-      operator: 'in',
-      compareValue: valueRoom.member
+      fieldName: 'room_id',
+      operator: '==',
+      compareValue: params.id
     }
-  }, [valueRoom.member])
+  }, [params.id])
 
-  const memberList = useFirestore('users', usersCondition)
+  const memberList = useFirestore('user_room', usersCondition)
+  // const  = clientRoom.shift();
   // console.log(memberList)
 
   setCurrRoom(valueRoom)
@@ -171,7 +178,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
           }
         })
       })
-      .then(() => { })
+      .then(() => {})
       .catch(error => {
         console.log('Transaction failed: ', error)
       })
@@ -193,8 +200,13 @@ const HomeSidebar = ({ setCurrRoom }) => {
           <div className="home-sidebar-location">
             {listAdd.map(location => (
               <div className="vote" key={location.id}>
-                <input type="checkbox" value={location.location}></input>
                 <span className="nameVote">
+                  <input
+                    type="checkbox"
+                    value={location.id}
+                    onChange={e => handleCheckBox(e)}
+                    // checked={location => (location.vote_users.includes(uid) ? true : false)}
+                  ></input>
                   {location.location}
                 </span>
                 <h5 className="quantilyVote">{location.num_vote}</h5>
@@ -202,10 +214,11 @@ const HomeSidebar = ({ setCurrRoom }) => {
             ))}
           </div>
           <div className="home-sidebar-member">
-            {memberList.map(member => (
+            {memberList?.map(member => (
               <div className="vote" key={member.uid}>
+                <img src={member.avatar}></img>
                 <span className="nameVote">
-                  {valueRoom.member}
+                  {member.nickname}
                 </span>
               </div>
             ))}
@@ -238,9 +251,13 @@ const HomeSidebar = ({ setCurrRoom }) => {
           </div>
 
           <div className="btnEndVote">
-            <button type="submit" onClick={e => handleEndVote(e)}>
-              Kết thúc
-            </button>
+            {isHost?.title ? (
+              <button type="submit" onClick={e => handleEndVote(e)}>
+                Kết thúc
+              </button>
+            ) : (
+              ''
+            )}
           </div>
           <button className="go-back" onClick={handleGoBack}>
             <span>Quay lại</span>
