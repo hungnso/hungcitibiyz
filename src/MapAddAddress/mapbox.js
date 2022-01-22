@@ -96,6 +96,11 @@ function Mapbox({ setShow, onClose }) {
 
     console.log(curraddName)
     // setLocationVote(prev => [...prev, nameAddress])
+    if(!locationVote){
+      setCurrAddName(nameAddress)
+    }else{
+      setLocationVote( [ nameAddress])
+    }
 
     // setShow(false)
     onClose()
@@ -148,6 +153,6 @@ function Mapbox({ setShow, onClose }) {
         Thêm địa điểm
       </button>
     </div>
-  )
+  ) 
 }
 export default Mapbox

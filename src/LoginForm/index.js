@@ -6,7 +6,7 @@ import InputForm from '../components/InputForm'
 import { AuthContext } from '../Context/AuthProvider'
 import { auth, db } from '../firebase/config'
 import { addDocument } from '../firebase/services'
-import Mapbox from '../MapAddAddress/mapbox'
+import Mapbox from './mapbox'
 import ModalForm from '../components/ModalForm'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -24,7 +24,7 @@ export default function LoginForm() {
     navigate(-1)
   }
   const {
-    user: { displayName, uid }
+    user: { displayName, uid, photoURL }
   } = useContext(AuthContext)
 
   const onClose = () => {
@@ -58,6 +58,7 @@ export default function LoginForm() {
           currentLocation: curraddName,
           nickname: values.full_name,
           user_id: uid,
+          avatar: photoURL,
           room_id: selectedRoomId
         })
       }

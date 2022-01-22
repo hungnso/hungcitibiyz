@@ -10,6 +10,8 @@ import { addDocument } from '../firebase/services'
 import { AuthContext } from '../Context/AuthProvider'
 import { db } from '../firebase/config'
 import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
+import { query, orderBy, where, limit } from "firebase/firestore";
+
 
 const HomeSidebar = ({ setCurrRoom }) => {
   const navigate = useNavigate()
@@ -33,9 +35,11 @@ const HomeSidebar = ({ setCurrRoom }) => {
   const [show, setShow] = useState(false)
 
   const [show2, setShow2] = useState(false)
+
   const [listAdd, setListAdd] = useState([])
 
   const [valueRoom, setValueRoom] = useState({})
+
   const onClose = () => {
     setShow2(false)
   }
@@ -102,6 +106,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
   const isHost = listRoomHost.find(value => value.id === params.id)
 
   const arrLocationVoteHost = useFirestore('locations', conditionVote)
+
   React.useMemo(() => {
     let listLocationVote = [...arrLocationVoteHost]
     setList(listLocationVote)
@@ -117,29 +122,58 @@ const HomeSidebar = ({ setCurrRoom }) => {
   const handleGoBack = () => {
     navigate('/')
   }
+
+  const dulieu = db.collection('locations')
+  const Abc = () => {
+    dulieu
+      .where('room_id', '==', params.id)
+      .orderBy('num_vote', 'desc')
+      .limit(1)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          console.log(doc.data())
+        })
+      })
+    // console.log(listAdd.orderBy("num_vote","decs"))
+
+    // console.log(laydulieu)
+
+    console.log(selectedRoomId)
+  }
   /// Lấy ra danh sách người dùng có trong phòng
   // console.log(valueRoom)
   const usersCondition = React.useMemo(() => {
     return {
-      fieldName: 'uid',
-      operator: 'in',
-      compareValue: valueRoom.member
+      fieldName: 'room_id',
+      operator: '==',
+      compareValue: params.id
     }
-  }, [valueRoom.member])
+  }, [params.id])
 
-  const memberList = useFirestore('users', usersCondition)
-  // console.log(memberList)
+  const listMember = useFirestore('user_room', usersCondition)
+  const memberList = listMember.slice(1)
+  console.log(memberList)
+  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
+  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
 
   setCurrRoom(valueRoom)
+  // const handleEndVote = e => {
+  //   e.preventDefault()
+  //   if (!selectedRoomHost.title) {
+  //     Abc()
+  //   } else {
+
+  //     Abc()
+  //     // navigate('/announcingVote')
+
+  //   }
+  // }
+
   const handleEndVote = e => {
     e.preventDefault()
-    if (!selectedRoomHost.title) {
-      alert('Chỉ người tạo phòng mới đc end')
-    } else {
-      navigate('/announcingVote')
-    }
+    Abc()
   }
-
   const handleCheckBox = e => {
     const locationId = e.target.value
     // Create a reference to the locationId doc.
@@ -171,7 +205,6 @@ const HomeSidebar = ({ setCurrRoom }) => {
         console.log('Transaction failed: ', error)
       })
   }
-
   return (
     <>
       <div className="home">
@@ -185,10 +218,10 @@ const HomeSidebar = ({ setCurrRoom }) => {
             <h2>{valueRoom.description}</h2>
           </div>
 
-          <div className="home-sidebar-members">
+          <div className="home-sidebar-location">
             {listAdd.map(location => (
               <div className="vote" key={location.id}>
-                <h4 className="nameVote">
+                <span className="nameVote">
                   <input
                     type="checkbox"
                     value={location.id}
@@ -196,11 +229,21 @@ const HomeSidebar = ({ setCurrRoom }) => {
                     defaultChecked={location.vote_users.includes(uid)}
                   ></input>
                   {location.location}
-                </h4>
+                </span>
                 <h5 className="quantilyVote">{location.vote_users.length}</h5>
               </div>
             ))}
           </div>
+          <div className="home-sidebar-member">
+            {memberList?.map(member => (
+              <div className="vote" key={member.uid}>
+                <img src={member.avatar}></img>
+                <span className="nameVote">{member.nickname}</span>
+              </div>
+            ))}
+          </div>
+
+
 
           <div className="btnLocation_share">
             <button style={{ width: '95%' }} onClick={() => setShow2(true)}>
@@ -214,7 +257,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
               size="xl"
             />
           </div>
-          <div className="btnLocation_share">
+
+          <div className="btnShareLink">
             <button style={{ width: '95%' }} onClick={() => setShow(true)}>
               Chia Sẻ Link
             </button>
@@ -227,10 +271,11 @@ const HomeSidebar = ({ setCurrRoom }) => {
               size="md"
             />
           </div>
+
           <div className="btnEndVote">
             {isHost?.title ? (
               <button type="submit" onClick={e => handleEndVote(e)}>
-                ENDVOTE
+                Kết thúc
               </button>
             ) : (
               ''

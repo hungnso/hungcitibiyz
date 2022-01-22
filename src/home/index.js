@@ -35,7 +35,7 @@ function Home() {
     setCurrAddName('')
     navigate('/contact')
   }
-
+ 
   const conditionHost = React.useMemo(() => {
     return {
       fieldName: 'room_id',

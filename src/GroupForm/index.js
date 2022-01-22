@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from 'reactstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import InputForm from '../components/InputForm'
 import ModalForm from '../components/ModalForm'
-
+import './styles.css'
 import { useNavigate } from 'react-router-dom'
 import Mapbox from '../MapAddAddress/mapbox'
 import { useFormik } from 'formik'
@@ -20,7 +20,7 @@ function GroupForm() {
   const {
     user: { uid, photoURL }
   } = React.useContext(AuthContext)
-  const { locationVote, currLocation, nickname } = React.useContext(AppContext)
+  const { locationVote ,setLocationVote,curraddName,setCurrAddName, nickname ,currLocation} = React.useContext(AppContext)
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
@@ -73,6 +73,7 @@ function GroupForm() {
               id: doc.id
             }))
             const newRoom = documents[documents.length - 1]
+            console.log(newRoom)
             addDocument('user_room', {
               currentLocation: currLocation,
               nickname: nickname,
@@ -90,6 +91,38 @@ function GroupForm() {
       // alert(JSON.stringify(values, null, 2))
     }
   })
+
+  
+  
+ 
+  const onDelete =(value) => {
+  //  db.child(`location/${value}`).remove();
+  console.log(locationVote)
+  // const item = locationVot
+  // const item =[];
+    for(let i=0;i< locationVote.length;i++){
+      if(locationVote[i]===value){
+        locationVote.splice(i,1)
+       break;
+      }
+    }
+    setLocationVote([...locationVote])
+    
+   
+    // const deleteAddress = firebase.database().ref('user_room').child(locationVote.id)
+    // const item = locationVote.pop();
+    // console.log(locationVote)
+    // setLocationVote(item =>[...item])
+
+    
+
+    // deleteAddress.remove()
+    // locationVote.remove()
+    // setLocationVote(locationVote)
+    // setShow(false);
+    // console.log(deleteAddress)
+  }
+
   return (
     <div className="add_form">
       <div className="krqetT"></div>
@@ -151,12 +184,17 @@ function GroupForm() {
                     />
                   </div>
 
-                  <div className="address_vote">
-                    {locationVote.map((value, index) => (
-                      <button type="button" key={index} className="btn_address" onClick={() => setShow(true)}>
+                <div className="address_vote">
+                  {locationVote.map((value,index) => (
+                    <div className="location_adrress" key={index} >
+                      <button type="button"  className="btn_address" onClick={() => setShow(true)}>
                         {value}
                       </button>
-                    ))}
+                      <button type="button"  onClick={()=>onDelete(`${value}`)} className='btn_delete_address'> <span className="icon_delete">X</span>  </button>
+                    
+                    </div>
+                  ))}
+                  
 
                     <ModalForm
                       show={show}
