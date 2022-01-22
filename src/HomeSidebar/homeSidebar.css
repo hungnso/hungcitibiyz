@@ -25,12 +25,10 @@
     border: none;
     color: #FFFFFF;
     text-align: center;
-    font-size: 25px;
-    padding: 20px;
-    width: 50%;
     transition: all 0.5s;
     cursor: pointer;
-    margin-top: 25px;
+    width: 45%;
+    height: 50px;
 }
 
 .go-back span {
@@ -168,5 +166,20 @@
     border: 1px solid;
     font-weight: bold;
     background-color: #FFFFFF;
+    position: relative;
+}
+
+.listPeople {
+    position: absolute;
+    width: 150px;
+    height: 40px;
+    background-color: #fff;
+    top: 30px;
+    right: 50px;
+    border-radius: 8px;
+    opacity: 0.8;
+    cursor: pointer;
+}
+.mapBox {
     position: relative;
 }

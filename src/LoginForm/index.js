@@ -11,10 +11,12 @@ import ModalForm from '../components/ModalForm'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { AppContext } from '../Context/AppProvider'
+import LogOut from '../components/LogOut'
 
 export default function LoginForm() {
   let navigate = useNavigate()
-  const { curraddName } = useContext(AppContext)
+  const { curraddName, selectedRoomId } = useContext(AppContext)
+  const [nickname, setNickName] = React.useState('')
   const { roomClient } = useContext(AppContext)
 
   // React.useEffect(() => {
@@ -41,14 +43,12 @@ export default function LoginForm() {
     user: { displayName, uid }
   } = useContext(AuthContext)
 
-  const onClose =() => { 
-
+  const onClose = () => {
     setShow(false)
-  
-}
+  }
   const formik = useFormik({
     initialValues: {
-      full_name: ''
+      full_name: nickname
     },
     validationSchema: Yup.object({
       full_name: Yup.string()
@@ -58,13 +58,15 @@ export default function LoginForm() {
     }),
     onSubmit: values => {
       console.log(values)
+      setNickName(values.full_name)
       console.log(curraddName)
       addDocument('user_room', {
         currentLocation: curraddName,
         nickname: values.full_name,
         user_id: uid
       })
-      navigate('/create')
+      console.log(selectedRoomId)
+      selectedRoomId ? navigate(`/room-vote/${selectedRoomId}`) : navigate('/create')
     }
   })
 
@@ -72,6 +74,7 @@ export default function LoginForm() {
     <div className="login_form">
       <div className="krqetT"></div>
       <div className="ifKAln"></div>
+      <LogOut />
       <Container>
         <h1
           style={{
@@ -92,12 +95,11 @@ export default function LoginForm() {
                     <InputForm
                       type="text"
                       id="Text1"
-                      placeholder={ formik.values.full_name ? formik.values.full_name :"Tên Người Dùng *"}
+                      placeholder={formik.values.full_name ? formik.values.full_name : 'Tên Người Dùng *'}
                       name="full_name"
                       defaultValue={formik.values.full_name}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                     
                     />
                     {formik.errors.full_name && formik.touched.full_name && (
                       <p className="msg_err">{formik.errors.full_name}</p>
@@ -121,9 +123,8 @@ export default function LoginForm() {
                         show={show}
                         onHide={() => setShow(false)}
                         ModalTile={''}
-                        ModalChildren={<Mapbox onClose={onClose}/>}
+                        ModalChildren={<Mapbox onClose={onClose} />}
                         size="xl"
-                        
                       />
                     </div>
                   </div>
@@ -133,7 +134,11 @@ export default function LoginForm() {
                   <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
                     Trở Về
                   </button>
-                  <button type="submit" disabled={!(formik.values.full_name && curraddName)}  className="btn login_btn">
+                  <button
+                    type="submit"
+                    className="btn login_btn"
+                    disabled={!(formik.isValid && formik.dirty && curraddName.length != 0)}
+                  >
                     Tiếp Theo
                   </button>
                 </div>

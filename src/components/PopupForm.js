@@ -4,7 +4,7 @@ import InputForm from './InputForm'
 function PopupForm({ value }) {
   const copy = () => {
     const el = document.createElement('input')
-    el.value = window.location.href
+    el.value = value
     document.body.appendChild(el)
     el.select()
     document.execCommand('copy')

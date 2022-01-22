@@ -3,17 +3,23 @@
 }
 .login_form {
   background-color: rgb(70, 23, 143);
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   width: 100vw;
   padding: 100px 0;
-  position: relative;
+}
+
+.login_form h1 {
+  margin-top: 25px;
 }
 
 .login_wrapper {
   background: #fff;
   padding: 50px;
   width: 100%;
-  margin-top: 30px;
+  margin-top: 50px;
+  border-radius: 8px;
+  position: relative;
 }
 
 .login_wrapper a.btn,
@@ -58,7 +64,12 @@
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.form-group input {
+  border-radius: 8px;
+  background-color: #ccc;
 }
 
 .form_row {
@@ -66,9 +77,9 @@
 }
 
 .login_btn_wrapper {
-  padding-bottom: 20px;
   display: flex;
   justify-content: space-evenly;
+  margin-top: 45px;
 }
 
 .login_btn_wrapper a.login_btn {
@@ -101,8 +112,9 @@
 }
 .msg_err {
   color: #d41a1a;
-  font-size: 12px;
-  margin: 4px 0 8px 0;
+  font-size: 11px;
+  position: absolute;
+  bottom: -32px;
 }
 button.btn_address {
   color: #fff;
@@ -130,20 +142,7 @@ button.btn_address {
   text-decoration: none;
   outline: none;
   cursor: pointer;
-}
-.facebook,
-.google {
-  color: #fff;
-  border: none;
-  font-size: 18px;
-  padding: 10px;
-  line-height: 30px;
-}
-.facebook {
-  background-color: #30a1e7;
-}
-.google {
-  background-color: #cf4332;
+  margin-top: 20px;
 }
 .icon_social {
   width: 30px;
@@ -151,8 +150,27 @@ button.btn_address {
   margin-right: 20px;
 }
 
+/* css style scrollbar */
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 8px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #aaa; 
+  border-radius: 8px;
+}
+
 @media screen and (max-width: 767px) {
   .login_form {
     height: 100%;
+    padding: 50px 0;
   }  
 }
