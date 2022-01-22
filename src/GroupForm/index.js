@@ -20,13 +20,13 @@ function GroupForm() {
   const {
     user: { uid, photoURL }
   } = React.useContext(AuthContext)
-  const { locationVote, currLocation, nickname } = React.useContext(AppContext)
+  const { locationVote, currLocation, nickname, setCurrLocation, setNickName } = React.useContext(AppContext)
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
 
   const handleGoBack = () => {
-    navigate(-1)
+    navigate('/contact')
   }
   const onClose = () => {
     setShow(false)
@@ -56,39 +56,34 @@ function GroupForm() {
     }),
     onSubmit: values => {
       if (locationVote.length > 0) {
-        addDocument('rooms', {
-          title: values.label,
-          description: values.content,
-          max_location: 5,
-          vote_status: true,
-          member: [],
-          user_id: uid
-        })
         db.collection('rooms')
-          .orderBy('createdAt')
-          .where('user_id', '==', uid)
-          .onSnapshot(snapshot => {
-            const documents = snapshot.docs.map(doc => ({
-              ...doc.data(),
-              id: doc.id
-            }))
-            const newRoom = documents[documents.length - 1]
-            console.log(newRoom)
+          .add({
+            title: values.label,
+            description: values.content,
+            max_location: 5,
+            vote_status: true,
+            member: [],
+            user_id: uid
+          })
+          .then(docRef => {
+            console.log('Document written with ID: ', docRef.id)
             addDocument('user_room', {
               currentLocation: currLocation,
               nickname: nickname,
               avatar: photoURL,
               user_id: uid,
-              room_id: newRoom.id
+              room_id: docRef.id
             })
-
-            navigate(`/room-vote/${newRoom.id}`)
+            setNickName('')
+            setCurrLocation('')
+            navigate(`/room-vote/${docRef.id}`)
+          })
+          .catch(error => {
+            console.error('Error adding document: ', error)
           })
       } else {
         alert('bạn cần nhập địa chỉ')
       }
-
-      // alert(JSON.stringify(values, null, 2))
     }
   })
   return (

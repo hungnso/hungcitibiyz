@@ -36,6 +36,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
   const [listAdd, setListAdd] = useState([])
 
   const [valueRoom, setValueRoom] = useState({})
+  const [hung, setHung] = useState()
   const onClose = () => {
     setShow2(false)
   }
@@ -115,6 +116,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
   }, [arrLocationVoteHost, setList])
 
   const handleGoBack = () => {
+    setHung()
+
     navigate('/')
   }
   /// Lấy ra danh sách người dùng có trong phòng
@@ -128,8 +131,14 @@ const HomeSidebar = ({ setCurrRoom }) => {
   }, [params.id])
 
   const listMember = useFirestore('user_room', usersCondition)
-  const memberList = listMember.slice(1)
-  console.log(memberList)
+
+  React.useEffect(() => {
+    console.log(listMember)
+    // const memberList = listMember.slice(1)
+    // setHung(memberList)
+  }, [listMember])
+  // console.log(memberList)
+  // const memberCurrent =
   // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
   // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
 
@@ -217,7 +226,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
                       
                   </div> */}
 
-          {memberList?.map(member => (
+          {listMember?.map(member => (
             <div className="vote" key={member.uid}>
               <img src={member.avatar}></img>
               <span className="nameVote">{member.nickname}</span>
