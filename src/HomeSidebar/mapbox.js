@@ -3,8 +3,9 @@ import ReactMapGL, { Marker } from 'react-map-gl'
 import { useState } from 'react'
 import { AppContext } from '../Context/AppProvider'
 import axios from 'axios'
+import useFirestore from '../hooks/useFirestore'
 
-function Mapbox({ member }) {
+function Mapbox({ currRoom, params }) {
   const [viewport, setViewport] = useState({
     width: '75vw',
     height: '100vh',
@@ -20,12 +21,13 @@ function Mapbox({ member }) {
   useEffect(() => {
     let newS = []
     list.map(address => {
-      axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address.location}.json?access_token=${token}`)
+      axios
+        .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address.location}.json?access_token=${token}`)
         .then(function (response) {
           newS.push({
             ...address,
             longitude: response.data.features[0].center[0],
-            latitude: response.data.features[0].center[1],
+            latitude: response.data.features[0].center[1]
           })
         })
         .catch(function (error) {
@@ -36,6 +38,17 @@ function Mapbox({ member }) {
   }, [list])
 
   const mapRef = useRef()
+
+  const MemberCondition = React.useMemo(() => {
+    return {
+      fieldName: 'room_id',
+      operator: '==',
+      compareValue: params
+    }
+  }, [params])
+
+  const valueRoom = useFirestore('user_room', MemberCondition)
+  console.log(valueRoom)
 
   // const handleViewportChange = useCallback(newViewport => setViewport(newViewport), [])
 
@@ -58,7 +71,7 @@ function Mapbox({ member }) {
         {...viewport}
         mapStyle="mapbox://styles/mapbox/streets-v11"
         mapboxApiAccessToken="pk.eyJ1IjoidHJhbm5oYW4xMiIsImEiOiJja3k5cnd6M2QwOWN4MnZxbWJianJvNTgxIn0.ubgU2PdV-ahm1liOZLyjMw"
-        onViewportChange={(viewport) => setViewport(viewport)}
+        onViewportChange={viewport => setViewport(viewport)}
       >
         {newAddress.map(val => {
           return (
