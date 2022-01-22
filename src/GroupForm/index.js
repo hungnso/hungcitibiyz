@@ -18,30 +18,13 @@ import LogOut from '../components/LogOut'
 
 function GroupForm() {
   const {
-    user: { uid }
+    user: { uid, photoURL }
   } = React.useContext(AuthContext)
-  const { locationVote } = React.useContext(AppContext)
+  const { locationVote, currLocation, nickname } = React.useContext(AppContext)
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
 
-  // const roomsCondition = React.useMemo(() => {
-  //   return {
-  //     fieldName: 'members',
-  //     operator: 'array-contains',
-  //     compareValue: user.uid
-  //   }
-  // }, [user.uid])
-
-  // const rooms = useFirestore('rooms', roomsCondition)
-  // console.log(rooms)
-  // const { rooms } = React.useContext(AppContext)
-  // console.log(rooms)
-
-  const handleCLick = e => {
-    e.preventDefault()
-    navigate('/room-vote')
-  }
   const handleGoBack = () => {
     navigate(-1)
   }
@@ -49,6 +32,12 @@ function GroupForm() {
     setShow(false)
     setShows(false)
   }
+
+  React.useEffect(() => {
+    if (!currLocation || !nickname) {
+      navigate('/contact')
+    }
+  })
 
   const formik = useFormik({
     initialValues: {
@@ -72,13 +61,32 @@ function GroupForm() {
           description: values.content,
           max_location: 5,
           vote_status: true,
-          member: [uid],
+          member: [],
           user_id: uid
         })
-        navigate('/')
+        db.collection('rooms')
+          .orderBy('createdAt')
+          .where('user_id', '==', uid)
+          .onSnapshot(snapshot => {
+            const documents = snapshot.docs.map(doc => ({
+              ...doc.data(),
+              id: doc.id
+            }))
+            const newRoom = documents[documents.length - 1]
+            addDocument('user_room', {
+              currentLocation: currLocation,
+              nickname: nickname,
+              avatar: photoURL,
+              user_id: uid,
+              room_id: newRoom.id
+            })
+
+            navigate(`/room-vote/${newRoom.id}`)
+          })
       } else {
         alert('bạn cần nhập địa chỉ')
       }
+
       // alert(JSON.stringify(values, null, 2))
     }
   })
@@ -138,8 +146,8 @@ function GroupForm() {
                 </div>
 
                 <div className="address_vote">
-                  {locationVote.map(value => (
-                    <button type="button" key={`${value} +1`} className="btn_address" onClick={() => setShow(true)}>
+                  {locationVote.map((value, index) => (
+                    <button type="button" key={index} className="btn_address" onClick={() => setShow(true)}>
                       {value}
                     </button>
                   ))}
