@@ -121,14 +121,17 @@ const HomeSidebar = ({ setCurrRoom }) => {
   // console.log(valueRoom)
   const usersCondition = React.useMemo(() => {
     return {
-      fieldName: 'uid',
-      operator: 'in',
-      compareValue: valueRoom.member
+      fieldName: 'room_id',
+      operator: '==',
+      compareValue: params.id
     }
-  }, [valueRoom.member])
+  }, [params.id])
 
-  const memberList = useFirestore('users', usersCondition)
-  // console.log(memberList)
+  const listMember = useFirestore('user_room', usersCondition)
+  const memberList = listMember.slice(1)
+  console.log(memberList)
+  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
+  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
 
   setCurrRoom(valueRoom)
   const handleEndVote = e => {
@@ -213,6 +216,13 @@ const HomeSidebar = ({ setCurrRoom }) => {
           {/* <div className="home-sidebar-location">
                       
                   </div> */}
+
+          {memberList?.map(member => (
+            <div className="vote" key={member.uid}>
+              <img src={member.avatar}></img>
+              <span className="nameVote">{member.nickname}</span>
+            </div>
+          ))}
 
           <div className="btnLocation_share">
             <button style={{ width: '95%' }} onClick={() => setShow2(true)}>
