@@ -129,9 +129,11 @@ const HomeSidebar = ({ setCurrRoom }) => {
     }
   }, [params.id])
 
-  const memberList = useFirestore('user_room', usersCondition)
-  // const  = clientRoom.shift();
-  // console.log(memberList)
+  const listMember = useFirestore('user_room', usersCondition)
+  const memberList = listMember.slice(1)
+  console.log(memberList)
+  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
+  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
 
   setCurrRoom(valueRoom)
   const handleEndVote = e => {
@@ -224,7 +226,14 @@ const HomeSidebar = ({ setCurrRoom }) => {
             ))}
           </div>
 
-          <div className="btnAddLocation">
+          {memberList?.map(member => (
+            <div className="vote" key={member.uid}>
+              <img src={member.avatar}></img>
+              <span className="nameVote">{member.nickname}</span>
+            </div>
+          ))}
+
+          <div className="btnLocation_share">
             <button style={{ width: '95%' }} onClick={() => setShow2(true)}>
               Thêm địa Chỉ
             </button>

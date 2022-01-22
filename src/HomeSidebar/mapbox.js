@@ -39,16 +39,16 @@ function Mapbox({ currRoom, params }) {
 
   const mapRef = useRef()
 
-  const MemberCondition = React.useMemo(() => {
-    return {
-      fieldName: 'room_id',
-      operator: '==',
-      compareValue: params
-    }
-  }, [params])
+  // const MemberCondition = React.useMemo(() => {
+  //   return {
+  //     fieldName: 'room_id',
+  //     operator: '==',
+  //     compareValue: params
+  //   }
+  // }, [params])
 
-  const valueRoom = useFirestore('user_room', MemberCondition)
-  console.log(valueRoom)
+  // const valueRoom = useFirestore('user_room', MemberCondition)
+  // console.log(valueRoom)
 
   // const handleViewportChange = useCallback(newViewport => setViewport(newViewport), [])
 

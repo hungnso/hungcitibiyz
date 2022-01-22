@@ -24,7 +24,7 @@ export default function LoginForm() {
     navigate(-1)
   }
   const {
-    user: { displayName, uid }
+    user: { displayName, uid, photoURL }
   } = useContext(AuthContext)
 
   const onClose = () => {
@@ -58,6 +58,7 @@ export default function LoginForm() {
           currentLocation: curraddName,
           nickname: values.full_name,
           user_id: uid,
+          avatar: photoURL,
           room_id: selectedRoomId
         })
       }

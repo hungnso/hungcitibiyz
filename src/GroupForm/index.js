@@ -73,6 +73,7 @@ function GroupForm() {
               id: doc.id
             }))
             const newRoom = documents[documents.length - 1]
+            console.log(newRoom)
             addDocument('user_room', {
               currentLocation: currLocation,
               nickname: nickname,
