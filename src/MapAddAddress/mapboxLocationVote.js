@@ -108,9 +108,8 @@ function MapboxLocationVote({ setShow, onClose }) {
 
   const isAddressHome = () => {
     for (let i = 0; i < listLocationVote.length; i++) {
-      if (listLocationVote[i].location == nameAddress) {
+      if (listLocationVote[i].location === nameAddress) {
         return true
-        break
       } else {
         return false
       }
@@ -122,9 +121,8 @@ function MapboxLocationVote({ setShow, onClose }) {
   const { locationVote } = React.useContext(AppContext)
   const isAddress = () => {
     for (let i = 0; i < locationVote.length; i++) {
-      if (locationVote[i] == nameAddress) {
+      if (locationVote[i] === nameAddress) {
         return true
-        break
       } else {
         return false
       }

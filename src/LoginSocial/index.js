@@ -1,5 +1,5 @@
-import React from 'react'
-import { useHistory, useNavigate } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
 import firebase, { auth } from '../firebase/config'
 import { addDocument } from '../firebase/services'
@@ -12,7 +12,8 @@ function LoginSocial({ setIsAuth }) {
 
   const handleLogin = async provider => {
     const { additionalUserInfo, user } = await auth.signInWithPopup(provider)
-    navigate('/home')
+    navigate('/')
+
     if (additionalUserInfo?.isNewUser && user) {
       addDocument('users', {
         displayName: user.displayName,

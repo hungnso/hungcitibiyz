@@ -71,10 +71,11 @@ function GroupForm() {
           title: values.label,
           description: values.content,
           max_location: 5,
+          vote_status: true,
           member: [uid],
           user_id: uid
         })
-        navigate('/home')
+        navigate('/')
       } else {
         alert('bạn cần nhập địa chỉ')
       }

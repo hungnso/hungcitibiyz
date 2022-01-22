@@ -1,11 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Container, Row, Col } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import ModalForm from '../components/ModalForm'
 import InputForm from '../components/InputForm'
 import './styles.css'
 import { AppContext } from '../Context/AppProvider'
-import useFirestore from '../hooks/useFirestore'
 import { db } from '../firebase/config'
 import { AuthContext } from '../Context/AuthProvider'
 import useCurrAdd from '../hooks/useCurrAdd'
@@ -16,7 +15,6 @@ function Home() {
   const {
     user: { uid, displayName }
   } = useContext(AuthContext)
-  const [idRoom, setIdRoom] = useState('')
   const [show, setShow] = useState(false)
   const [showList, setShowList] = useState(false)
   const [showVote, setShowVote] = useState(false)
@@ -55,7 +53,7 @@ function Home() {
   const currAddClient = useCurrAdd('user_room', conditionClient, conditonUser)
 
   React.useEffect(() => {
-    console.log(currAddHost)
+    // console.log(currAddHost)
   }, [currAddHost])
   React.useEffect(() => {
     console.log(currAddClient)
@@ -116,15 +114,6 @@ function Home() {
         >
           Chào mừng {displayName} đến với App Cùng Đi Chơi
         </h1>
-        {/* <h3
-          style={{
-            color: 'white',
-            textTransform: 'uppercase',
-            textAlign: 'center'
-          }}
-        >
-          Địa chỉ hiện tại của bạn là :{' '}
-        </h3> */}
         <Row>
           <Col lg={3}></Col>
           <Col lg={6}>

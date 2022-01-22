@@ -1,8 +1,10 @@
-import React from 'react'
-import ReactMapGL, { Marker, Popup } from 'react-map-gl'
+import React, { useContext, useEffect, useRef } from 'react'
+import ReactMapGL, { Marker } from 'react-map-gl'
 import { useState } from 'react'
+import { AppContext } from '../Context/AppProvider'
+import axios from 'axios'
 
-function Mapbox(member) {
+function Mapbox({ member }) {
   const [viewport, setViewport] = useState({
     width: '75vw',
     height: '100vh',
@@ -11,42 +13,67 @@ function Mapbox(member) {
     zoom: 16
   })
 
-  console.log(member);
-  const showClient = () => {
-    alert('hello world')
-  }
+  const token = 'pk.eyJ1IjoidHJhbm5oYW4xMiIsImEiOiJja3k5cnd6M2QwOWN4MnZxbWJianJvNTgxIn0.ubgU2PdV-ahm1liOZLyjMw'
+  const [newAddress, setNewAddress] = useState([])
+  const { list } = useContext(AppContext)
+
+  useEffect(() => {
+    let newS = []
+    list.map(address => {
+      axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address.location}.json?access_token=${token}`)
+        .then(function (response) {
+          newS.push({
+            ...address,
+            longitude: response.data.features[0].center[0],
+            latitude: response.data.features[0].center[1],
+          })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    })
+    setNewAddress(newS)
+  }, [list])
+
+  const mapRef = useRef()
+
+  // const handleViewportChange = useCallback(newViewport => setViewport(newViewport), [])
+
+  // const handleGeocoderViewportChange = useCallback(
+  //   newViewport => {
+  //     const geocoderDefaultOverrides = { transitionDuration: 1000 };
+
+  //     return handleViewportChange({
+  //       ...newViewport,
+  //       ...geocoderDefaultOverrides
+  //     });
+  //   },
+  //   [handleViewportChange]
+  // )
+
   return (
-    <div className="mapBox">
+    <div className="">
       <ReactMapGL
+        ref={mapRef}
         {...viewport}
         mapStyle="mapbox://styles/mapbox/streets-v11"
-        onViewportChange={nextViewport => setViewport(nextViewport)}
-        mapboxApiAccessToken="pk.eyJ1IjoibmFtNzU3NzAwIiwiYSI6ImNreTlydXF0dzA3YXgycG1nNHBubzI0MmQifQ.s7lXBzeWikKP9HhgoUwsqA"
+        mapboxApiAccessToken="pk.eyJ1IjoidHJhbm5oYW4xMiIsImEiOiJja3k5cnd6M2QwOWN4MnZxbWJianJvNTgxIn0.ubgU2PdV-ahm1liOZLyjMw"
+        onViewportChange={(viewport) => setViewport(viewport)}
       >
-        <Marker latitude={21.0169247} longitude={105.7811318} offsetLeft={0} offsetRight={0}>
-          <div>
-            <img
-              style={{ width: '30px', height: '40px' }}
-              src="https://www.pinclipart.com/picdir/middle/525-5258227_google-map-marker-icon-png-clipart.png"
-            />
-            map
-          </div>
-        </Marker>
-        <Marker latitude={21} longitude={105.7811318} offsetLeft={0} offsetRight={0}>
-          <div>
-            <img
-              style={{ width: '30px', height: '40px' }}
-              src="https://www.pinclipart.com/picdir/middle/525-5258227_google-map-marker-icon-png-clipart.png"
-            />
-            map
-          </div>
-        </Marker>
+        {newAddress.map(val => {
+          return (
+            <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={0} offsetRight={0}>
+              <div>
+                <img
+                  style={{ height: 40, width: 40 }}
+                  src="https://i0.wp.com/www.carewellurgentcare.com/wp-content/uploads/2016/09/blue-location-icon-Location_marker_pin_map_gps.png?ssl=1"
+                />
+              </div>
+            </Marker>
+          )
+        })}
       </ReactMapGL>
-      <div className="listClient" onClick={showClient}>
-          {/* {member.map(client => {
-            <div className="client" key={client.uid}></div>
-          })} */}
-      </div>
+      {/* <div className="listPeople" onClick={showClient}></div> */}
     </div>
   )
 }

@@ -15,7 +15,7 @@ import LogOut from '../components/LogOut'
 
 export default function LoginForm() {
   let navigate = useNavigate()
-  const { curraddName } = useContext(AppContext)
+  const { curraddName, selectedRoomId } = useContext(AppContext)
   const [nickname, setNickName] = React.useState('')
   const { roomClient } = useContext(AppContext)
 
@@ -65,7 +65,8 @@ export default function LoginForm() {
         nickname: values.full_name,
         user_id: uid
       })
-      navigate('/create')
+      console.log(selectedRoomId)
+      selectedRoomId ? navigate(`/room-vote/${selectedRoomId}`) : navigate('/create')
     }
   })
 

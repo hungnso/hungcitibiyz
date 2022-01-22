@@ -3,9 +3,10 @@ import { Outlet, Navigate } from 'react-router-dom'
 import { AuthContext } from '../../Context/AuthProvider'
 
 function GuestPage() {
-  const user = React.useContext(AuthContext)
+  const user = localStorage.getItem('uid')
   console.log(user)
   const isMember = !!user
-  return !isMember ? <Outlet /> : <Navigate to="/home" />
+  console.log(isMember)
+  return !isMember ? <Outlet /> : <Navigate to="/" />
 }
 export default GuestPage

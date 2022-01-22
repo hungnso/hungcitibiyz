@@ -9,8 +9,8 @@ import './style.css'
 import { AppContext } from '../Context/AppProvider'
 import { useNavigate } from 'react-router-dom'
 
-function Mapbox({ setShow,onClose }) {
-  const { curraddName, setCurrAddName, setLocationVote } = useContext(AppContext)
+function Mapbox({ setShow, onClose }) {
+  const { curraddName, setCurrAddName, setLocationVote, locationVote } = useContext(AppContext)
   let navigate = useNavigate()
   // Token
   var token = 'pk.eyJ1IjoiY29udG90IiwiYSI6ImNreWFvamp0dDAwbnIyb210OGdkbjUxc2oifQ.4h9mS6yDTwWeWFpHyJ_6EQ'
@@ -29,7 +29,6 @@ function Mapbox({ setShow,onClose }) {
     pitch: 0
   })
 
-  
   // Drag
   var [events, logEvents] = useState({})
   var onMarkerDragStart = useCallback(event => {
@@ -88,20 +87,20 @@ function Mapbox({ setShow,onClose }) {
 
   // Submit location
 
-  var handleSubmitLocation = (e) => {
-    e.preventDefault();
+  var handleSubmitLocation = e => {
+    e.preventDefault()
     console.log(marker.latitude)
     console.log(marker.longitude)
     console.log(nameAddress)
     setCurrAddName(nameAddress)
+
     console.log(curraddName)
     // setLocationVote(prev => [...prev, nameAddress])
 
     // setShow(false)
     onClose()
-    
   }
- 
+
   // Return
   return (
     <div>
@@ -145,7 +144,7 @@ function Mapbox({ setShow,onClose }) {
           </div>
         </div>
       </div>
-      <button type="submit" className="btnAdd" onClick={e =>handleSubmitLocation(e)}>
+      <button type="submit" className="btnAdd" onClick={e => handleSubmitLocation(e)}>
         Thêm địa điểm
       </button>
     </div>

@@ -8,14 +8,14 @@ import { AppContext } from '../Context/AppProvider'
 import useFirestore from '../hooks/useFirestore'
 import { addDocument } from '../firebase/services'
 import { AuthContext } from '../Context/AuthProvider'
-import Mapbox from '../MapAddAddress/mapbox'
-import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
 import { db } from '../firebase/config'
+import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
 
-const HomeSidebar = () => {
+const HomeSidebar = ({ setCurrRoom }) => {
   const navigate = useNavigate()
+  const { selectedRoomHost, selectedRoomClient, locationVote, setLocationVote, selectedRoomId, setList } =
+    React.useContext(AppContext)
   const params = useParams()
-  const { selectedRoomHost, selectedRoomClient, locationVote, setLocationVote, setList } = React.useContext(AppContext)
   const {
     user: { uid }
   } = React.useContext(AuthContext)
@@ -73,6 +73,7 @@ const HomeSidebar = () => {
       addDocument('locations', {
         location: value,
         num_vote: 0,
+        vote_users: [],
         room_id: params.id,
         createBy: uid
       })
@@ -80,9 +81,29 @@ const HomeSidebar = () => {
     })
   }, [locationVote, params.id, uid, setLocationVote])
 
-  const arrLocationVoteHost = useFirestore('locations', conditionVote)
+  // useEffect(() => {
+  //   listAdd.map(location => {
+  //     let locationId = location.id
+  //     let locationItem = db.collection('locations').doc(locationId)
+  //     locationItem
+  //       .get()
+  //       .then(doc => {
+  //         let voteUsers = doc.data().vote_users
+  //         voteUsers.include
+  //       })
+  //       .catch(error => {
+  //         console.log('Error getting document:', error)
+  //       })
+  //   })
+  // }, [])
 
-  // console.log(listLocationVote)
+  const arrLocationVoteHost = useFirestore('locations', conditionVote)
+  React.useMemo(() => {
+    let listLocationVote = [...arrLocationVoteHost]
+    setList(listLocationVote)
+    setListAdd(listLocationVote)
+  }, [arrLocationVoteHost, setList])
+
   React.useMemo(() => {
     let listLocationVote = [...arrLocationVoteHost]
     setList(listLocationVote)
@@ -103,12 +124,9 @@ const HomeSidebar = () => {
   }, [valueRoom.member])
 
   const memberList = useFirestore('users', usersCondition)
-  console.log('memberList', memberList)
+  // console.log(memberList)
 
-  // useEffect(() => {
-  //   setMember(memberList)
-  // }, [setMember]);
-
+  setCurrRoom(valueRoom)
   const handleEndVote = e => {
     e.preventDefault()
     if (!selectedRoomHost.title) {
@@ -117,8 +135,46 @@ const HomeSidebar = () => {
       navigate('/announcingVote')
     }
   }
-  const handleCheck = e => {
-    console.log(e.target.checked)
+
+  const handleCheckBox = e => {
+    const locationId = e.target.value
+    // Create a reference to the locationId doc.
+    const locationItem = db.collection('locations').doc(locationId)
+    locationItem
+      .get()
+      .then(doc => {
+        console.log('Document data:', doc.data().vote_users)
+      })
+      .catch(error => {
+        console.log('Error getting document:', error)
+      })
+
+    return db
+      .runTransaction(transaction => {
+        // This code may get re-run multiple times if there are conflicts.
+        return transaction.get(locationItem).then(sfDoc => {
+          if (!sfDoc.exists) {
+            // eslint-disable-next-line no-throw-literal
+            throw 'Document does not exist!'
+          }
+          let numVote = sfDoc.data().num_vote
+          // let voteUsers = sfDoc.data().vote_users
+          if (e.target.checked) {
+            console.log(true)
+            transaction.update(locationItem, { num_vote: numVote + 1 })
+            // transaction.update(locationItem, { vote_users: voteUsers.push(uid) })
+          } else {
+            console.log(false)
+            transaction.update(locationItem, { num_vote: numVote - 1 })
+            // let newVoteUsers = voteUsers.splice(voteUsers.indexOf('c'), 1)
+            // transaction.update(locationItem, { vote_users: newVoteUsers })
+          }
+        })
+      })
+      .then(() => { })
+      .catch(error => {
+        console.log('Transaction failed: ', error)
+      })
   }
 
   return (
@@ -137,7 +193,7 @@ const HomeSidebar = () => {
           <div className="home-sidebar-location">
             {listAdd.map(location => (
               <div className="vote" key={location.id}>
-                <input type="checkbox" onChange={e => handleCheck(e)} value={location.location}></input>
+                <input type="checkbox" value={location.location}></input>
                 <span className="nameVote">
                   {location.location}
                 </span>
@@ -176,7 +232,7 @@ const HomeSidebar = () => {
               show={show}
               onHide={() => setShow(false)}
               ModalTile={''}
-              ModalChildren={<PopupForm value={window.location.href} />}
+              ModalChildren={<PopupForm value={`http://localhost:3000/${selectedRoomId}`} />}
               size="md"
             />
           </div>
