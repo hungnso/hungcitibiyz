@@ -121,6 +121,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
 
   const handleGoBack = () => {
     navigate('/')
+    //delete all data room_id, user_room...
   }
 
   const dulieu = db.collection('locations')
