@@ -7,11 +7,11 @@ import Geocoder from 'react-map-gl-geocoder'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import './style.css'
 import { AppContext } from '../Context/AppProvider'
-import useFirestore from '../hooks/useFirestore'
+import { useNavigate } from 'react-router-dom'
 
-function MapboxLocationVote({ setShow ,onClose}) {
-  const { curraddName, setCurrAddName, setLocationVote } = useContext(AppContext)
-
+function Mapbox({ setShow,onClose }) {
+  const { curraddName, setCurrAddName, setLocationVote,locationVote } = useContext(AppContext)
+  let navigate = useNavigate()
   // Token
   var token = 'pk.eyJ1IjoiY29udG90IiwiYSI6ImNreWFvamp0dDAwbnIyb210OGdkbjUxc2oifQ.4h9mS6yDTwWeWFpHyJ_6EQ'
   // Marker
@@ -28,6 +28,8 @@ function MapboxLocationVote({ setShow ,onClose}) {
     bearing: 0,
     pitch: 0
   })
+
+  
   // Drag
   var [events, logEvents] = useState({})
   var onMarkerDragStart = useCallback(event => {
@@ -84,81 +86,19 @@ function MapboxLocationVote({ setShow ,onClose}) {
     SetnameAddress(location.result.place_name)
   }
 
-//Kiểm tra tồn tại địa chỉ chưa
-
-  const { selectedRoomHost, selectedRoomClient } = React.useContext(AppContext)
-  const conditionHostVote = React.useMemo(() => {
-    return {
-      fieldName: 'room_id',
-      operator: '==',
-      compareValue: selectedRoomHost.id
-    }
-  }, [selectedRoomHost.id])
-  const conditionClientVote = React.useMemo(() => {
-    return {
-      fieldName: 'room_id',
-      operator: '==',
-      compareValue: selectedRoomClient.id
-    }
-  }, [selectedRoomClient.id])
-  const arrLocationVoteHost = useFirestore('locations', conditionHostVote)
-  const arrLocationVoteClient = useFirestore('locations', conditionClientVote)
-  
-
-  let listLocationVote = [...arrLocationVoteClient, ...arrLocationVoteHost]
-
-  
-
-  const isAddressHome =()=>{
-    for(let i=0; i<listLocationVote.length; i++) {
-      if(listLocationVote[i].location === nameAddress){
-        return true
-      }else{
-        return false
-      }
-    }
-  }
-  
-
   // Submit location
 
-const { locationVote } = React.useContext(AppContext)
-const isAddress =()=>{
-  for(let i=0; i<locationVote.length; i++) {
-    if(locationVote[i] ===nameAddress){
-      return true
-    }else{
-      return false
-    }
-  }
-
-}
-
   var handleSubmitLocation = (e) => {
-        e.preventDefault();
-        console.log(marker.latitude)
-        console.log(marker.longitude)
-        console.log(nameAddress)
-        // setLocationVote(nameAddress)
-        // console.log(curraddName)
-        // setLocationVote([])
-        
-        setLocationVote(prev => [...prev, nameAddress])
-        onClose()
-    //   }
-    // }
-  }
-  const handleSubmitLocation2 =(e) =>{
-    if(isAddress()){
-      alert('đã tồn tại Địa chỉ này')
-    }else if(isAddressHome()){
-      alert('đã tồn tại Địa chỉ này')
-    }
-    else{
-      handleSubmitLocation(e)
-    }
-  }
+    e.preventDefault();
+    console.log(marker.latitude)
+    console.log(marker.longitude)
+    console.log(nameAddress)
+      setCurrAddName(nameAddress)
 
+    onClose()
+    
+  }
+ 
   // Return
   return (
     <div>
@@ -202,10 +142,10 @@ const isAddress =()=>{
           </div>
         </div>
       </div>
-      <button className="btnAdd" onClick={e =>handleSubmitLocation2(e)}>
+      <button type="submit" className="btnAdd"   onClick={e =>handleSubmitLocation(e)}>
         Thêm địa điểm
       </button>
     </div>
-  )
+  ) 
 }
-export default MapboxLocationVote
+export default Mapbox

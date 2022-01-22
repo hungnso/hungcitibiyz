@@ -47,7 +47,7 @@ export default function AppProvider({ children }) {
   )
   // console.log(selectedRoomClient)
 
-  /// Đây là lấy ra địa chỉ hiện tại của người dùng lúc đã nhập khi vào 1 phòng nào đó
+  // / Đây là lấy ra địa chỉ hiện tại của người dùng lúc đã nhập khi vào 1 phòng nào đó
 
   // const curAddCondition = React.useMemo(() => {
   //   return {

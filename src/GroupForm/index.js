@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from 'reactstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import InputForm from '../components/InputForm'
 import ModalForm from '../components/ModalForm'
-
+import './styles.css'
 import { useNavigate } from 'react-router-dom'
 import Mapbox from '../MapAddAddress/mapbox'
 import { useFormik } from 'formik'
@@ -14,12 +14,12 @@ import useFirestore from '../hooks/useFirestore'
 import AppProvider, { AppContext } from '../Context/AppProvider'
 import { addDocument } from '../firebase/services'
 import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
-
+ 
 function GroupForm() {
   const {
     user: { uid }
   } = React.useContext(AuthContext)
-  const { locationVote } = React.useContext(AppContext)
+  const { locationVote ,setLocationVote,curraddName,setCurrAddName} = React.useContext(AppContext)
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
@@ -78,6 +78,26 @@ function GroupForm() {
       navigate('/home')
     }
   })
+
+  
+
+  // Remove the 'capital' field from the document
+  // var removeCapital = cityRef.update({
+  //     capital: firebase.firestore.FieldValue.delete()
+  // });
+ 
+  const onDelete =(value) => {
+  //  db.child(`location/${value}`).remove();
+  console.log(`location/${value}`)
+    // const deleteAddress = firebase.database().ref('user_room').child(locationVote.id)
+    
+
+    // deleteAddress.remove()
+    // locationVote.remove()
+    // setLocationVote(locationVote)
+    // setShow(false);
+    // console.log(deleteAddress)
+  }
   return (
     <div className="login_form">
       <div className="krqetT"></div>
@@ -134,9 +154,12 @@ function GroupForm() {
 
                 <div className="address_vote">
                   {locationVote.map(value => (
-                    <button type="button" key={`${value} +1`} className="btn_address" onClick={() => setShow(true)}>
-                      {value}
-                    </button>
+                    <div className="location_adrress">
+                      <button type="button" key={`${value} +1`} className="btn_address" onClick={() => setShow(true)}>
+                        {value}
+                      </button>
+                      <button type="button" key={`${value} +1`} onClick={()=>onDelete(value)} className='btn_delete_address'> <span className="icon_delete">X</span>  </button>
+                    </div>
                   ))}
 
                   <ModalForm

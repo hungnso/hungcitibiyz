@@ -10,7 +10,7 @@ import { AppContext } from '../Context/AppProvider'
 import { useNavigate } from 'react-router-dom'
 
 function Mapbox({ setShow,onClose }) {
-  const { curraddName, setCurrAddName, setLocationVote } = useContext(AppContext)
+  const { curraddName, setCurrAddName, setLocationVote,locationVote } = useContext(AppContext)
   let navigate = useNavigate()
   // Token
   var token = 'pk.eyJ1IjoiY29udG90IiwiYSI6ImNreWFvamp0dDAwbnIyb210OGdkbjUxc2oifQ.4h9mS6yDTwWeWFpHyJ_6EQ'
@@ -93,9 +93,14 @@ function Mapbox({ setShow,onClose }) {
     console.log(marker.latitude)
     console.log(marker.longitude)
     console.log(nameAddress)
-    setCurrAddName(nameAddress)
-    console.log(curraddName)
+    
+    
     // setLocationVote(prev => [...prev, nameAddress])
+    if(!locationVote){
+      setCurrAddName(nameAddress)
+    }else{
+      setLocationVote( [ nameAddress])
+    }
 
     // setShow(false)
     onClose()
@@ -149,6 +154,6 @@ function Mapbox({ setShow,onClose }) {
         Thêm địa điểm
       </button>
     </div>
-  )
+  ) 
 }
 export default Mapbox
