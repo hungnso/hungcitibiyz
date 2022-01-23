@@ -40,6 +40,13 @@ const HomeSidebar = ({ setCurrRoom }) => {
 
   const [valueRoom, setValueRoom] = useState({})
 
+  const [voteWin, setVoteWin] = useState('')
+
+  const [isActive, setActive] = useState(false)
+
+  const [voteStatus, setvoteStatus] = useState(true)
+
+  const room =db.collection("rooms")
   const onClose = () => {
     setShow2(false)
   }
@@ -106,13 +113,18 @@ const HomeSidebar = ({ setCurrRoom }) => {
   const isHost = listRoomHost.find(value => value.id === params.id)
 
 
-  
+ 
 
 
+  React.useEffect(()=>{
+    room.doc(params.id).get().then((doc)=> {
+      console.log(doc.data().vote_status)
+      setActive(!doc.data().vote_status)
+    }); 
+    getDataVote()
 
-  
-
-
+   
+  },[setActive])
 
 
 
@@ -136,14 +148,19 @@ const HomeSidebar = ({ setCurrRoom }) => {
 
 
 
-  const dulieu =db.collection("locations")
-  const Abc =() =>{
-    dulieu.where('room_id' ,'==',params.id).orderBy('num_vote','desc').limit(1).get().then((querySnapshot) => {
-       querySnapshot.forEach((doc) => {
-           console.log(doc.data())
-           
-       });
-     });
+  const dataVoteWin =db.collection("locations")
+  const getDataVote =() =>{
+    
+    dataVoteWin.where('room_id' ,'==',params.id).orderBy('num_vote','desc').limit(1).get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            // console.log(doc.data())
+            setVoteWin(doc.data())
+            
+        });
+      }); 
+      
+
+      
      // console.log(listAdd.orderBy("num_vote","decs"))
      
      // console.log(laydulieu)
@@ -179,11 +196,35 @@ const HomeSidebar = ({ setCurrRoom }) => {
       
   //   }
   // }
+
+  
+  
   
   const handleEndVote = e => {
       e.preventDefault()
-      Abc()
+      getDataVote()
+      
+      setActive(true)
+
+      db.collection("rooms").doc(params.id).update({
+        "vote_status": false
+      })
+      .then(() => {
+          console.log("Document successfully updated!");
+      }) 
+     
     }
+
+    const handleConfim = e => {
+      if(window.confirm("Bạn có muốn kết thúc bình chọn")){
+        handleEndVote(e)
+      }
+      
+     
+    }
+
+
+    
   const handleCheckBox = e => {
     const locationId = e.target.value
     // Create a reference to the locationId doc.
@@ -224,6 +265,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
         console.log('Transaction failed: ', error)
       })
   }
+  console.log(isActive)
   return (
     <>
       <div className="home">
@@ -236,6 +278,19 @@ const HomeSidebar = ({ setCurrRoom }) => {
             {/* <h2>{selectedRoomHost.description ? selectedRoomHost.description : selectedRoomClient.description}</h2> */}
             <h2>{valueRoom.description}</h2>
           </div>
+        
+
+
+
+          <div className={isActive ? "home-sidebar-content" : "contendisable"}>
+            <h4>Địa điểm được chọn nhiều nhất</h4>
+            <hr/>
+            <h5>{voteWin.location}</h5>
+          </div>
+
+
+
+
 
           <div className="home-sidebar-location">
             {listAdd.map(location => (
@@ -294,7 +349,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
 
           <div className="btnEndVote">
             {isHost?.title ? (
-              <button type="submit" onClick={e => handleEndVote(e)}>
+              <button type="submit" disabled={isActive} onClick={handleConfim}>
                 Kết thúc
               </button>
             ) : (

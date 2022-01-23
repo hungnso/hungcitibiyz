@@ -10,7 +10,7 @@ import { AppContext } from '../Context/AppProvider'
 import useFirestore from '../hooks/useFirestore'
 
 function MapboxLocationVote({ setShow, onClose }) {
-  const { curraddName, setCurrAddName, setLocationVote } = useContext(AppContext)
+  const { curraddName, setCurrAddName, setLocationVote,locationVote } = useContext(AppContext)
 
   // Token
   var token = 'pk.eyJ1IjoiY29udG90IiwiYSI6ImNreWFvamp0dDAwbnIyb210OGdkbjUxc2oifQ.4h9mS6yDTwWeWFpHyJ_6EQ'
@@ -57,7 +57,7 @@ function MapboxLocationVote({ setShow, onClose }) {
         console.log(error)
       })
   }, [marker, token])
-
+ 
   // Zoom when search
   var geocoderContainerRef = useRef()
   var mapRef = useRef()
@@ -118,9 +118,10 @@ function MapboxLocationVote({ setShow, onClose }) {
 
   // Submit location
 
-  const { locationVote } = React.useContext(AppContext)
   const isAddress = () => {
-    for (let i = 0; i < locationVote.length; i++) {
+    console.log(nameAddress)
+    for (const i = 0; i < locationVote.length; i++) {
+      
       if (locationVote[i] === nameAddress) {
         return true
       } else {

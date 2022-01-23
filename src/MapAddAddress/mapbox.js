@@ -89,17 +89,24 @@ function Mapbox({ setShow, onClose }) {
 
   var handleSubmitLocation = e => {
     e.preventDefault()
-    console.log(marker.latitude)
-    console.log(marker.longitude)
-    console.log(nameAddress)
+    // console.log(marker.latitude)
+    // console.log(marker.longitude)
+    // console.log(nameAddress)
     setCurrAddName(nameAddress)
-
     console.log(curraddName)
     // setLocationVote(prev => [...prev, nameAddress])
     if(!locationVote){
       setCurrAddName(nameAddress)
     }else{
-      setLocationVote( [ nameAddress])
+      setLocationVote( [nameAddress])
+      // for(let i=0;i< locationVote.length;i++){
+      //   if(locationVote[i]==='Benh Vien Da Khoa Trang An, 72 Ngõ Thông Phong, Quận Đống Đa, Hanoi 115100, Vietnam'){
+      //     locationVote.splice(i,1)
+      //     setCurrAddName(nameAddress)
+      //     setLocationVote(prev => [...prev, nameAddress])
+      //    break;
+      //   }
+      // }
     }
 
     // setShow(false)

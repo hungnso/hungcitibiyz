@@ -25,6 +25,9 @@ function GroupForm() {
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
 
+  const [nameAddress, SetnameAddress] = useState('')
+
+
   const handleGoBack = () => {
     navigate(-1)
   }
@@ -114,13 +117,6 @@ function GroupForm() {
     // console.log(locationVote)
     // setLocationVote(item =>[...item])
 
-    
-
-    // deleteAddress.remove()
-    // locationVote.remove()
-    // setLocationVote(locationVote)
-    // setShow(false);
-    // console.log(deleteAddress)
   }
 
   return (
@@ -197,6 +193,7 @@ function GroupForm() {
                   
 
                     <ModalForm
+                      
                       show={show}
                       onHide={() => setShow(false)}
                       ModalTile={''}
