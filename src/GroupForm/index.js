@@ -25,6 +25,8 @@ function GroupForm() {
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
+  const [value, SetValue] = useState('')
+  const [index, SetIndex] = useState('')
 
   const handleGoBack = () => {
     navigate('/contact')
@@ -112,6 +114,15 @@ function GroupForm() {
     // setShow(false);
     // console.log(deleteAddress)
   }
+  const handleEdit = (value, index) => {
+    console.log(value, index)
+    // const updateLocation = [...locationVote]
+    // updateLocation[index] = value
+    // setLocationVote(updateLocation)
+    SetValue(value)
+    SetIndex(index)
+    setShow(true)
+  }
 
   return (
     <div className="add_form">
@@ -169,7 +180,7 @@ function GroupForm() {
                       show={shows}
                       onHide={() => setShows(false)}
                       ModalTile={''}
-                      ModalChildren={<MapboxLocationVote onClose={onClose} />}
+                      ModalChildren={<MapboxLocationVote onClose={onClose} value={value} index={index} />}
                       size="xl"
                     />
                   </div>
@@ -177,7 +188,7 @@ function GroupForm() {
                   <div className="address_vote">
                     {locationVote.map((value, index) => (
                       <div className="location_adrress" key={index}>
-                        <button type="button" className="btn_address" onClick={() => setShow(true)}>
+                        <button type="button" className="btn_address" onClick={() => handleEdit(value, index)}>
                           {value}
                         </button>
                         <button type="button" onClick={() => onDelete(`${value}`)} className="btn_delete_address">
@@ -191,7 +202,7 @@ function GroupForm() {
                       show={show}
                       onHide={() => setShow(false)}
                       ModalTile={''}
-                      ModalChildren={<Mapbox onClose={onClose} />}
+                      ModalChildren={<Mapbox onClose={onClose} value={value} index={index} />}
                       size="xl"
                     />
                   </div>
