@@ -11,6 +11,7 @@ import { AuthContext } from '../Context/AuthProvider'
 import { db } from '../firebase/config'
 import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
 import { query, orderBy, where, limit } from 'firebase/firestore'
+import useGetDataFirebase from '../hooks/useGetDataFirebase'
 
 const HomeSidebar = ({ setCurrRoom }) => {
   const navigate = useNavigate()
@@ -59,20 +60,15 @@ const HomeSidebar = ({ setCurrRoom }) => {
       compareValue: uid
     }
   }, [uid])
-  // const conditionHostVote = React.useMemo(() => {
-  //   return {
-  //     fieldName: 'room_id',
-  //     operator: '==',
-  //     compareValue: selectedRoomHost.id
-  //   }
-  // }, [selectedRoomHost.id])
-  // const conditionClientVote = React.useMemo(() => {
-  //   return {
-  //     fieldName: 'room_id',
-  //     operator: '==',
-  //     compareValue: selectedRoomClient.id
-  //   }
-  // }, [selectedRoomClient.id])
+  /// Kiểm tra người dùng đã là thành viên hay chưa
+  const conditionCheckUser = React.useMemo(() => {
+    return {
+      fieldName: 'member',
+      operator: 'array-contains',
+      compareValue: uid
+    }
+  }, [uid])
+
   React.useEffect(() => {
     const { id } = params
     db.collection('rooms')
@@ -101,17 +97,11 @@ const HomeSidebar = ({ setCurrRoom }) => {
     })
   }, [locationVote, params.id, uid, setLocationVote])
 
-  const listRoomHost = useFirestore('rooms', conditionEndVote)
+  const listRoomHost = useGetDataFirebase('rooms', conditionEndVote)
+  const memberInRoom = useGetDataFirebase('rooms', conditionCheckUser)
   const isHost = listRoomHost.find(value => value.id === params.id)
 
   const arrLocationVoteHost = useFirestore('locations', conditionVote)
-  // console.log(arrLocationVoteHost)
-
-  React.useMemo(() => {
-    let listLocationVote = [...arrLocationVoteHost]
-    setList(listLocationVote)
-    setListAdd(listLocationVote)
-  }, [arrLocationVoteHost, setList])
 
   React.useMemo(() => {
     let listLocationVote = [...arrLocationVoteHost]
@@ -155,29 +145,16 @@ const HomeSidebar = ({ setCurrRoom }) => {
   }, [params.id])
 
   const listMember = useFirestore('user_room', usersCondition)
+  //// Đây là user chứa địa chỉ lúc đầu người dùng nhập
+  const userLogin = listMember.find(member => member.user_id === uid)
 
   React.useEffect(() => {
     console.log(listMember)
-    // const memberList = listMember.slice(1)
-    // setHung(memberList)
-  }, [listMember])
-  // console.log(memberList)
-  // const memberCurrent =
-  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
-  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
+    console.log(userLogin)
+    console.log(memberInRoom)
+  }, [listMember, userLogin, memberInRoom])
 
   setCurrRoom(valueRoom)
-  // const handleEndVote = e => {
-  //   e.preventDefault()
-  //   if (!selectedRoomHost.title) {
-  //     Abc()
-  //   } else {
-
-  //     Abc()
-  //     // navigate('/announcingVote')
-
-  //   }
-  // }
 
   const handleEndVote = e => {
     e.preventDefault()
@@ -231,8 +208,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
           <div className="home-sidebar-location">
             {listAdd.map(location => (
               <div className="vote_room" key={location.id}>
-                <input class="custom" type="checkbox" key={location.id} id={location.id} />
-                <label className="label_vote" for={location.id}>
+                <input className="custom" type="checkbox" key={location.id} id={location.id} />
+                <label className="label_vote" htmlFor={location.id}>
                   {location.location}
                 </label>
                 <h5 className="quantilyVote_room">{location.vote_users.length}</h5>

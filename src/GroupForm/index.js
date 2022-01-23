@@ -20,7 +20,7 @@ function GroupForm() {
   const {
     user: { uid, photoURL }
   } = React.useContext(AuthContext)
-  const { locationVote, currLocation, nickname, setCurrLocation, setNickName, setLocationVote } =
+  const { locationVote, currLocation, nickname, setCurrLocation, setNickName, setLocationVote, setSelectedRoomId } =
     React.useContext(AppContext)
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
@@ -79,6 +79,7 @@ function GroupForm() {
             })
             setNickName('')
             setCurrLocation('')
+            setSelectedRoomId('')
             navigate(`/room-vote/${docRef.id}`)
           })
           .catch(error => {

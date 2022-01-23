@@ -105,6 +105,7 @@ function MapboxLocationVote({ setShow, onClose }) {
   const arrLocationVoteClient = useFirestore('locations', conditionClientVote)
 
   let listLocationVote = [...arrLocationVoteClient, ...arrLocationVoteHost]
+  console.log(listLocationVote)
 
   const isAddressHome = () => {
     for (let i = 0; i < listLocationVote.length; i++) {
