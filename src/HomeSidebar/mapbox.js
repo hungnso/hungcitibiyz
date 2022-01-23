@@ -109,8 +109,6 @@ function Mapbox({ currRoom, params, focusLocation }) {
     getPointRadius: 100
   })
 
-
-
   return (
     <div className="vote_mapbox">
       <DeckGL

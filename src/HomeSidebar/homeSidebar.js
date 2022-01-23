@@ -9,6 +9,8 @@ import { addDocument } from '../firebase/services'
 import { AuthContext } from '../Context/AuthProvider'
 import { db } from '../firebase/config'
 import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
+import { query, orderBy, where, limit } from 'firebase/firestore'
+import useGetDataFirebase from '../hooks/useGetDataFirebase'
 
 const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   const navigate = useNavigate()
@@ -27,7 +29,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   const [listAdd, setListAdd] = useState([])
 
   const [valueRoom, setValueRoom] = useState({})
-
+  const [hung, setHung] = useState()
   const onClose = () => {
     setShow2(false)
   }
@@ -48,20 +50,15 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
       compareValue: uid
     }
   }, [uid])
-  // const conditionHostVote = React.useMemo(() => {
-  //   return {
-  //     fieldName: 'room_id',
-  //     operator: '==',
-  //     compareValue: selectedRoomHost.id
-  //   }
-  // }, [selectedRoomHost.id])
-  // const conditionClientVote = React.useMemo(() => {
-  //   return {
-  //     fieldName: 'room_id',
-  //     operator: '==',
-  //     compareValue: selectedRoomClient.id
-  //   }
-  // }, [selectedRoomClient.id])
+  /// Kiểm tra người dùng đã là thành viên hay chưa
+  const conditionCheckUser = React.useMemo(() => {
+    return {
+      fieldName: 'member',
+      operator: 'array-contains',
+      compareValue: uid
+    }
+  }, [uid])
+
   React.useEffect(() => {
     const { id } = params
     db.collection('rooms')
@@ -90,7 +87,8 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     })
   }, [locationVote, params.id, uid, setLocationVote])
 
-  const listRoomHost = useFirestore('rooms', conditionEndVote)
+  const listRoomHost = useGetDataFirebase('rooms', conditionEndVote)
+  const memberInRoom = useGetDataFirebase('rooms', conditionCheckUser)
   const isHost = listRoomHost.find(value => value.id === params.id)
 
   const arrLocationVoteHost = useFirestore('locations', conditionVote)
@@ -101,13 +99,9 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     setListAdd(listLocationVote)
   }, [arrLocationVoteHost, setList])
 
-  React.useMemo(() => {
-    let listLocationVote = [...arrLocationVoteHost]
-    setList(listLocationVote)
-    setListAdd(listLocationVote)
-  }, [arrLocationVoteHost, setList])
-
   const handleGoBack = () => {
+    setHung()
+
     navigate('/')
     //delete all data room_id, user_room...
   }
@@ -141,22 +135,16 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   }, [params.id])
 
   const listMember = useFirestore('user_room', usersCondition)
-  const memberList = listMember.slice(1)
-  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
-  // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
+  //// Đây là user chứa địa chỉ lúc đầu người dùng nhập
+  const userLogin = listMember.find(member => member.user_id === uid)
+
+  React.useEffect(() => {
+    console.log(listMember)
+    console.log(userLogin)
+    console.log(memberInRoom)
+  }, [listMember, userLogin, memberInRoom])
 
   setCurrRoom(valueRoom)
-  // const handleEndVote = e => {
-  //   e.preventDefault()
-  //   if (!selectedRoomHost.title) {
-  //     Abc()
-  //   } else {
-
-  //     Abc()
-  //     // navigate('/announcingVote')
-
-  //   }
-  // }
 
   const handleEndVote = e => {
     e.preventDefault()
@@ -168,7 +156,6 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     const locationId = e.target.value
     // Create a reference to the locationId doc.
     const locationItem = db.collection('locations').doc(locationId)
-
     return db
       .runTransaction(transaction => {
         // This code may get re-run multiple times if there are conflicts.
@@ -214,35 +201,37 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
             <h2>{valueRoom.description}</h2>
           </div>
 
+          <h3 className="titel_banner">Danh Sách Địa Chỉ Bình Chọn</h3>
           <div className="home-sidebar-location">
             {listAdd.map(location => (
-              <div className="vote" key={location.id}>
-                <span className="nameVote">
-                  <input
-                    type="checkbox"
-                    value={location.id}
-                    onClick={e => handleCheckBox(e)}
-                    defaultChecked={location.vote_users.includes(uid)}
-                  ></input>
-                  <div onClick={() => handleFocusLocation(location.location)}>{location.location}</div>
-                </span>
-                <h5 className="quantilyVote">{location.vote_users.length}</h5>
+              <div className="vote_room" key={location.id}>
+                <input
+                  className="custom"
+                  type="checkbox"
+                  value={location.id}
+                  onClick={e => handleCheckBox(e)}
+                  defaultChecked={location.vote_users.includes(uid)}
+                />
+                <div className="div_vote" htmlFor={location.id} onClick={() => handleFocusLocation(location.location)}>
+                  {location.location}
+                </div>
+                <h5 className="quantilyVote_room">{location.vote_users.length}</h5>
               </div>
             ))}
           </div>
-          <div className="home-sidebar-member">
-            {memberList?.map(member => (
-              <div className="vote" key={member.uid}>
-                <img src={member.avatar}></img>
+
+          <h3 className="titel_banner">Danh Sách Người Tham Gia</h3>
+          <div className="home-sidebar-location">
+            {listMember?.map(member => (
+              <div className="vote_people" key={member.uid}>
+                <img className="img_people" src={member.avatar}></img>
                 <span className="nameVote">{member.nickname}</span>
               </div>
             ))}
           </div>
 
-
-
-          <div className="btnLocation_share">
-            <button style={{ width: '95%' }} onClick={() => setShow2(true)}>
+          <div className="btnShareLink">
+            <button type="submit" class="btn login_btn" style={{ width: '95%' }} onClick={() => setShow2(true)}>
               Thêm địa Chỉ
             </button>
             <ModalForm
@@ -255,7 +244,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
           </div>
 
           <div className="btnShareLink">
-            <button style={{ width: '95%' }} onClick={() => setShow(true)}>
+            <button type="submit" class="btn login_btn" style={{ width: '95%' }} onClick={() => setShow(true)}>
               Chia Sẻ Link
             </button>
             <ModalForm
@@ -277,9 +266,12 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
               ''
             )}
           </div>
-          <button className="go-back" onClick={handleGoBack}>
-            <span>Quay lại</span>
-          </button>
+
+          <div className="btnEndVote">
+            <button type="submit" class="btn login_btn" onClick={handleGoBack}>
+              <span>Quay lại</span>
+            </button>
+          </div>
         </div>
       </div>
     </>

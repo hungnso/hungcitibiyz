@@ -25,6 +25,7 @@ function Home() {
     setCurrLocation,
     setCurrAddName
   } = useContext(AppContext)
+  console.log(roomHost)
   const [hasFocus, setFocus] = useState(false)
 
   const navigate = useNavigate()
@@ -35,7 +36,18 @@ function Home() {
     setCurrAddName('')
     navigate('/contact')
   }
- 
+
+  db.collection('rooms')
+    .orderBy('createdAt')
+    .where('user_id', '==', '4qh5ZZkhSFVCJm2hInWNuKgNUcA3')
+    .onSnapshot(snapshot => {
+      const documents = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }))
+      console.log(documents)
+    })
+
   const conditionHost = React.useMemo(() => {
     return {
       fieldName: 'room_id',
@@ -96,6 +108,9 @@ function Home() {
             clickRoom.update({
               member: [...member, uid]
             })
+          } else {
+            alert('Bạn đã vào phòng này rồi vui lòng kiểm tra trong mục phòng đã tham gia!')
+            return
           }
 
           setSelectedRoomId(values.content)
