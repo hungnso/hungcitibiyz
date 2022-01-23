@@ -136,13 +136,12 @@ function MapboxLocationVote({ setShow, onClose }) {
     console.log(marker.longitude)
     console.log(nameAddress)
     console.log(locationVote.includes(nameAddress))
-    if (!locationVote.includes(nameAddress)) {
+    if (!locationVote.includes(nameAddress) && locationVote.length <= 4) {
       setLocationVote(prev => [...prev, nameAddress])
-      if (locationVote.length > 5) {
-        alert('quá 5 địa chỉ')
-      }
+    } else if (locationVote.length > 4) {
+      alert('Bạn chỉ đc nhập tối đa 5 địa chỉ')
     } else {
-      alert('địa chỉ trùng lặp')
+      alert('Địa chỉ trùng lắp')
     }
 
     onClose()

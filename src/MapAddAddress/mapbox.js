@@ -156,7 +156,7 @@ function Mapbox({ setShow, onClose, value, index }) {
         </div>
       </div>
       <button type="submit" className="btnAdd" onClick={e => handleSubmitLocation(e)}>
-        Thêm địa điểm
+        Sửa địa chỉ
       </button>
     </div>
   )
