@@ -9,7 +9,8 @@ import './style.css'
 import { AppContext } from '../Context/AppProvider'
 import { useNavigate } from 'react-router-dom'
 
-function Mapbox({ setShow, onClose }) {
+function Mapbox({ setShow, onClose, value, index }) {
+  console.log(value, index)
   const { curraddName, setCurrAddName, setLocationVote, locationVote } = useContext(AppContext)
   let navigate = useNavigate()
   // Token
@@ -91,23 +92,20 @@ function Mapbox({ setShow, onClose }) {
     e.preventDefault()
     // console.log(marker.latitude)
     // console.log(marker.longitude)
-    // console.log(nameAddress)
+    console.log(nameAddress)
     setCurrAddName(nameAddress)
     console.log(curraddName)
     // setLocationVote(prev => [...prev, nameAddress])
-    if(!locationVote){
-      setCurrAddName(nameAddress)
-    }else{
-      setLocationVote( [nameAddress])
-      // for(let i=0;i< locationVote.length;i++){
-      //   if(locationVote[i]==='Benh Vien Da Khoa Trang An, 72 Ngõ Thông Phong, Quận Đống Đa, Hanoi 115100, Vietnam'){
-      //     locationVote.splice(i,1)
-      //     setCurrAddName(nameAddress)
-      //     setLocationVote(prev => [...prev, nameAddress])
-      //    break;
-      //   }
-      // }
-    }
+
+    const updateLocationVote = [...locationVote]
+    updateLocationVote[index] = nameAddress
+
+    setLocationVote(updateLocationVote)
+    // if (!locationVote) {
+    //   setCurrAddName(nameAddress)
+    // } else {
+    //   setLocationVote([nameAddress])
+    // }
 
     // setShow(false)
     onClose()
@@ -157,9 +155,9 @@ function Mapbox({ setShow, onClose }) {
         </div>
       </div>
       <button type="submit" className="btnAdd" onClick={e => handleSubmitLocation(e)}>
-        Thêm địa điểm
+        Sửa địa chỉ
       </button>
     </div>
-  ) 
+  )
 }
 export default Mapbox
