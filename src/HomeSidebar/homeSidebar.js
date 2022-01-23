@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { Button } from 'react-bootstrap'
+import React, { useState } from 'react'
 import './homeSidebar.css'
 import { useNavigate, useParams } from 'react-router-dom'
 import ModalForm from '../components/ModalForm'
@@ -10,21 +9,10 @@ import { addDocument } from '../firebase/services'
 import { AuthContext } from '../Context/AuthProvider'
 import { db } from '../firebase/config'
 import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
-import { query, orderBy, where, limit } from "firebase/firestore";
 
-
-const HomeSidebar = ({ setCurrRoom }) => {
+const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   const navigate = useNavigate()
-  const {
-    selectedRoomHost,
-    locationVote,
-    setLocationVote,
-    selectedRoomId,
-    setSelectedRoomId,
-    setList,
-    setCurrLocation,
-    setNickname
-  } = React.useContext(AppContext)
+  const { locationVote, setLocationVote, selectedRoomId, setList } = React.useContext(AppContext)
   // console.log(selectedRoomHost)
   const params = useParams()
   const {
@@ -154,7 +142,6 @@ const HomeSidebar = ({ setCurrRoom }) => {
 
   const listMember = useFirestore('user_room', usersCondition)
   const memberList = listMember.slice(1)
-  console.log(memberList)
   // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
   // console.log(memberList.filter((v, i) => memberList.indexOf(v.avatar) === i))
 
@@ -175,6 +162,8 @@ const HomeSidebar = ({ setCurrRoom }) => {
     e.preventDefault()
     Abc()
   }
+
+  // Add/delete vote when user click checkbox vote
   const handleCheckBox = e => {
     const locationId = e.target.value
     // Create a reference to the locationId doc.
@@ -206,6 +195,12 @@ const HomeSidebar = ({ setCurrRoom }) => {
         console.log('Transaction failed: ', error)
       })
   }
+
+  // Display route from user to entertainment venues
+  const handleFocusLocation = location => {
+    setFocusLocation(location)
+  }
+
   return (
     <>
       <div className="home">
@@ -229,7 +224,7 @@ const HomeSidebar = ({ setCurrRoom }) => {
                     onClick={e => handleCheckBox(e)}
                     defaultChecked={location.vote_users.includes(uid)}
                   ></input>
-                  {location.location}
+                  <div onClick={() => handleFocusLocation(location.location)}>{location.location}</div>
                 </span>
                 <h5 className="quantilyVote">{location.vote_users.length}</h5>
               </div>
