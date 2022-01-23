@@ -1,0 +1,26 @@
+.location_adrress{
+    position: relative;
+}
+.btn_address{
+    
+    text-align: center;
+    z-index: 1;
+}
+.btn_delete_address{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.5);
+    right:10px;
+    color: #000;
+    top:40%;
+    z-index :20;
+    text-align: center;
+    border-radius:50%;
+    
+}
+.icon_delete{
+    right:8px;
+    color: #000;
+    top:-5px;
+}

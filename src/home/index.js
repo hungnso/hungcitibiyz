@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Container, Row, Col } from 'reactstrap'
+import Carousel from 'react-bootstrap/Carousel'
 import { useNavigate } from 'react-router-dom'
-import ModalForm from '../components/ModalForm'
 import InputForm from '../components/InputForm'
 import './styles.css'
 import { AppContext } from '../Context/AppProvider'
@@ -11,20 +11,42 @@ import useCurrAdd from '../hooks/useCurrAdd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import LogOut from '../components/LogOut'
+
 function Home() {
   const {
     user: { uid, displayName }
   } = useContext(AuthContext)
-  const [show, setShow] = useState(false)
-  const [showList, setShowList] = useState(false)
-  const [showVote, setShowVote] = useState(false)
-  const { roomClient, roomHost, setSelectedRoomId, selectedRoomHost, selectedRoomClient } = useContext(AppContext)
+  const {
+    roomClient,
+    roomHost,
+    setSelectedRoomId,
+    selectedRoomHost,
+    selectedRoomClient,
+    setCurrLocation,
+    setCurrAddName
+  } = useContext(AppContext)
+  console.log(roomHost)
+  const [hasFocus, setFocus] = useState(false)
 
   const navigate = useNavigate()
   const handleCLick = e => {
     e.preventDefault()
+    setCurrLocation('')
+
+    setCurrAddName('')
     navigate('/contact')
   }
+
+  db.collection('rooms')
+    .orderBy('createdAt')
+    .where('user_id', '==', '4qh5ZZkhSFVCJm2hInWNuKgNUcA3')
+    .onSnapshot(snapshot => {
+      const documents = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }))
+      console.log(documents)
+    })
 
   const conditionHost = React.useMemo(() => {
     return {
@@ -52,12 +74,12 @@ function Home() {
   const currAddHost = useCurrAdd('user_room', conditionHost, conditonUser)
   const currAddClient = useCurrAdd('user_room', conditionClient, conditonUser)
 
-  React.useEffect(() => {
-    // console.log(currAddHost)
-  }, [currAddHost])
-  React.useEffect(() => {
-    console.log(currAddClient)
-  }, [currAddClient])
+  // React.useEffect(() => {
+  //   // console.log(currAddHost)
+  // }, [currAddHost])
+  // React.useEffect(() => {
+  //   console.log(currAddClient)
+  // }, [currAddClient])
 
   const handleJoinRoom = value => {
     console.log(value)
@@ -86,11 +108,14 @@ function Home() {
             clickRoom.update({
               member: [...member, uid]
             })
+          } else {
+            alert('Bạn đã vào phòng này rồi vui lòng kiểm tra trong mục phòng đã tham gia!')
+            return
           }
 
           setSelectedRoomId(values.content)
 
-          navigate(`/room-vote/${values.content}`)
+          navigate(`/contact`)
         } else {
           // doc.data() will be undefined in this case
           alert('Phòng này không tồn tại')
@@ -99,127 +124,183 @@ function Home() {
     }
   })
 
+  const handleFocus = () => {
+    if (formik.values.content) {
+      setFocus(true)
+    } else {
+      setFocus(false)
+    }
+  }
+
+  const handleDelete = id => {
+    console.log('Xoá btn')
+  }
+
+  // tabs
+  const [currentTab, setCurrentTab] = useState('tab1')
+  const tabList = [
+    {
+      name: 'tab1',
+      label: 'Chung',
+      content: (
+        <div className="tab-content">
+          <h1 className="home_title">Cuộc bình chọn đi chơi chất lượng. Giờ đây miễn phí cho tất cả mọi người.</h1>
+          <div className="span_title">
+            Chúng tôi đã thiết kế lại App Cùng Đi Chơi — dịch vụ tổ chức cuộc bình chọn với độ bảo mật cao — để cung cấp
+            miễn phí cho mọi người.
+          </div>
+          <div className="home_left">
+            <div className="home_item">
+              <button onClick={e => handleCLick(e)} className="btn_add">
+                <span>Cuộc Bình Chọn Mới</span>
+              </button>
+              <form onSubmit={formik.handleSubmit}>
+                <InputForm
+                  type="text"
+                  id="Text1"
+                  placeholder="Nhập mã phòng tại đây"
+                  name="content"
+                  defaultValue={formik.values.content}
+                  onChange={formik.handleChange}
+                  onFocus={() => setFocus(true)}
+                  onBlur={handleFocus}
+                />
+                {hasFocus ? (
+                  <button type="submit" className="btn_tg" disabled={!(formik.isValid && formik.dirty)}>
+                    Tham Gia
+                  </button>
+                ) : null}
+              </form>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      name: 'tab2',
+      label: 'Bình Chọn Của Bạn',
+      content: (
+        <div className="tab-content">
+          <h2>Các Phòng Bạn Đã Tạo Bình Chọn</h2>
+          {roomHost.map(room => (
+            <div className="list_room" key={room.id}>
+              <button className="btn_address" onClick={() => handleJoinRoom(room.id)}>
+                {room.title}
+              </button>
+              <button className="login_btn" onClick={handleDelete} style={{ marginTop: '20px', marginLeft: '20px' }}>
+                Xóa
+              </button>
+            </div>
+          ))}
+        </div>
+      )
+    },
+    {
+      name: 'tab3',
+      label: 'Bình Chọn Tham Gia',
+      content: (
+        <div className="tab-content">
+          <h2>Các Phòng Bạn Đã Tham Gia</h2>
+          {roomClient.map(room => (
+            <div className="list_room" key={room.id}>
+              <button className="btn_address" onClick={() => handleJoinRoom(room.id)}>
+                {room.title}
+              </button>
+              <button className="login_btn" onClick={handleDelete} style={{ marginTop: '20px', marginLeft: '20px' }}>
+                Xóa
+              </button>
+            </div>
+          ))}
+        </div>
+      )
+    }
+  ]
   return (
-    <div className="login_form">
-      <div className="krqetT"></div>
-      <div className="ifKAln"></div>
+    <div className="home_body">
       <LogOut />
       <Container>
-        <h1
-          style={{
-            color: 'white',
-            textTransform: 'uppercase',
-            textAlign: 'center'
-          }}
-        >
-          Chào mừng {displayName} đến với App Cùng Đi Chơi
-        </h1>
         <Row>
-          <Col lg={3}></Col>
           <Col lg={6}>
-            <div className="home_body">
-              <Row>
-                <Col md={6}>
-                  <div className="home_item">
-                    <button onClick={e => handleCLick(e)}>
-                      <img className="icon_zoom" src={'https://cdn-icons-png.flaticon.com/512/1672/1672402.png'} />
-                      <span>Cuộc Bình Chọn Mới</span>
-                    </button>
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="home_item">
-                    <button
-                      onClick={e => {
-                        setShow(true)
-                      }}
-                    >
-                      <img className="icon_zoom" src={'http://cdn.onlinewebfonts.com/svg/img_356964.png'} />
-                      <span>Vào Phòng Sẵn Có</span>
-                    </button>
-                    <ModalForm
-                      show={show}
-                      onHide={() => setShow(false)}
-                      ModalTile={'Bạn có mã phòng bình chọn?'}
-                      ModalChildren={
-                        <div>
-                          <p>Để tham gia cuộc bình chọn, hãy nhập mã phòng do người tổ chức cung cấp **</p>
-                          <form onSubmit={formik.handleSubmit}>
-                            <InputForm
-                              type="text"
-                              id="Text1"
-                              placeholder="Nhập mã tại đây"
-                              name="content"
-                              defaultValue={formik.values.content}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}
-                            />
-                            {formik.errors.content && formik.touched.content && (
-                              <p className="msg_err">{formik.errors.content}</p>
-                            )}
-                            <button type="submit" className="btn_tg" disabled={!(formik.isValid && formik.dirty)}>
-                              Tham Gia
-                            </button>
-                          </form>
-                        </div>
-                      }
-                      size="lg"
-                    />
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="home_item">
-                    <button onClick={() => setShowList(true)}>
-                      <img className="icon_zoom" src={'http://cdn.onlinewebfonts.com/svg/img_82026.png'} />
-                      <span>Cuộc Bình Chọn Của Bạn</span>
-                    </button>
-                    <ModalForm
-                      show={showList}
-                      onHide={() => setShowList(false)}
-                      ModalTile={'Cuộc Bình Chọn Của Bạn!!!'}
-                      ModalChildren={
-                        <div>
-                          {roomHost.map(room => (
-                            <button key={room.id} className="btn_address" onClick={() => handleJoinRoom(room.id)}>
-                              {room.title}
-                            </button>
-                          ))}
-                        </div>
-                      }
-                      size="lg"
-                    />
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="home_item">
-                    <button onClick={() => setShowVote(true)}>
-                      <img
-                        className="icon_zoom"
-                        src={'https://hocvienagile.com/wp-content/uploads/2021/03/icon-dien-gia-300x300.png'}
-                      />
-                      <span>Cuộc Bình Chọn Tham Gia</span>
-                    </button>
-                    <ModalForm
-                      show={showVote}
-                      onHide={() => setShowVote(false)}
-                      ModalTile={'Cuộc Bình Chọn Đã Tham Gia!!!'}
-                      ModalChildren={
-                        <div>
-                          {roomClient.map(room => (
-                            <button key={room.id} className="btn_address" onClick={() => handleJoinRoom(room.id)}>
-                              {room.title}
-                            </button>
-                          ))}
-                        </div>
-                      }
-                      size="lg"
-                    />
-                  </div>
-                </Col>
-              </Row>
+            <div className="tabs">
+              {tabList.map((tab, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentTab(tab.name)}
+                  className={tab.name === currentTab ? 'tabs_active' : 'btn_tabs'}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
+
+            {tabList.map((tab, i) => {
+              if (tab.name === currentTab) {
+                return <div key={i}>{tab.content}</div>
+              } else {
+                return null
+              }
+            })}
           </Col>
-          <Col lg={3}></Col>
+          <Col lg={6}>
+            <Carousel>
+              <Carousel.Item>
+                <img
+                  className="d-block img_slide"
+                  src="https://www.gstatic.com/meet/user_edu_get_a_link_light_90698cd7b4ca04d3005c962a3756c42d.svg"
+                  alt="First slide"
+                />
+                <Carousel.Caption>
+                  <h3>Nhận đường liên kết bạn có thể chia sẻ</h3>
+                  <p>
+                    Nhấp vào <strong>Cuộc bình chọn mới</strong> để nhận đường liên kết mà bạn có thể gửi cho những
+                    người mình muốn họp cùng
+                  </p>
+                </Carousel.Caption>
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block img_slide"
+                  src="https://www.gstatic.com/meet/user_edu_brady_bunch_light_81fa864771e5c1dd6c75abe020c61345.svg"
+                  alt="Second slide"
+                />
+
+                <Carousel.Caption>
+                  <h3>Xem mọi người cùng lúc</h3>
+                  <p>
+                    Để thấy nhiều người hơn cùng một lúc, hãy chuyển tới phần Thay đổi bố cục trong trình đơn Tùy chọn
+                    khác.
+                  </p>
+                </Carousel.Caption>
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block img_slide"
+                  src="https://www.gstatic.com/meet/user_edu_scheduling_light_b352efa017e4f8f1ffda43e847820322.svg"
+                  alt="Third slide"
+                />
+
+                <Carousel.Caption>
+                  <h3>Lên kế hoạch trước</h3>
+                  <p>
+                    Nhấp vào <strong>Cuộc bình chọn mới</strong> để lên lịch cuộc bình chọn trong Lịch Google và gửi lời
+                    mời cho người tham gia
+                  </p>
+                </Carousel.Caption>
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block img_slide"
+                  src="https://www.gstatic.com/meet/user_edu_safety_light_e04a2bbb449524ef7e49ea36d5f25b65.svg"
+                  alt="Four slide"
+                />
+
+                <Carousel.Caption>
+                  <h3>Cuộc họp của bạn được bảo vệ an toàn</h3>
+                  <p>Không ai có thể tham gia cuộc họp trừ khi người tổ chức mời hoặc cho phép</p>
+                </Carousel.Caption>
+              </Carousel.Item>
+            </Carousel>
+          </Col>
         </Row>
       </Container>
     </div>

@@ -9,7 +9,8 @@ import './style.css'
 import { AppContext } from '../Context/AppProvider'
 import { useNavigate } from 'react-router-dom'
 
-function Mapbox({ setShow, onClose }) {
+function Mapbox({ setShow, onClose, value, index }) {
+  console.log(value, index)
   const { curraddName, setCurrAddName, setLocationVote, locationVote } = useContext(AppContext)
   let navigate = useNavigate()
   // Token
@@ -89,13 +90,22 @@ function Mapbox({ setShow, onClose }) {
 
   var handleSubmitLocation = e => {
     e.preventDefault()
-    console.log(marker.latitude)
-    console.log(marker.longitude)
+    // console.log(marker.latitude)
+    // console.log(marker.longitude)
     console.log(nameAddress)
     setCurrAddName(nameAddress)
-
     console.log(curraddName)
     // setLocationVote(prev => [...prev, nameAddress])
+
+    const updateLocationVote = [...locationVote]
+    updateLocationVote[index] = nameAddress
+
+    setLocationVote(updateLocationVote)
+    // if (!locationVote) {
+    //   setCurrAddName(nameAddress)
+    // } else {
+    //   setLocationVote([nameAddress])
+    // }
 
     // setShow(false)
     onClose()
@@ -145,7 +155,7 @@ function Mapbox({ setShow, onClose }) {
         </div>
       </div>
       <button type="submit" className="btnAdd" onClick={e => handleSubmitLocation(e)}>
-        Thêm địa điểm
+        Sửa địa chỉ
       </button>
     </div>
   )

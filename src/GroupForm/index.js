@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from 'reactstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import InputForm from '../components/InputForm'
 import ModalForm from '../components/ModalForm'
-
+import './styles.css'
 import { useNavigate } from 'react-router-dom'
 import Mapbox from '../MapAddAddress/mapbox'
 import { useFormik } from 'formik'
@@ -18,37 +18,32 @@ import LogOut from '../components/LogOut'
 
 function GroupForm() {
   const {
-    user: { uid }
+    user: { uid, photoURL }
   } = React.useContext(AuthContext)
-  const { locationVote } = React.useContext(AppContext)
+  const { locationVote, currLocation, nickname, setCurrLocation, setNickName, setLocationVote, setSelectedRoomId } =
+    React.useContext(AppContext)
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
+  const [value, SetValue] = useState('')
+  const [index, SetIndex] = useState('')
 
-  // const roomsCondition = React.useMemo(() => {
-  //   return {
-  //     fieldName: 'members',
-  //     operator: 'array-contains',
-  //     compareValue: user.uid
-  //   }
-  // }, [user.uid])
+  const [nameAddress, SetnameAddress] = useState('')
 
-  // const rooms = useFirestore('rooms', roomsCondition)
-  // console.log(rooms)
-  // const { rooms } = React.useContext(AppContext)
-  // console.log(rooms)
 
-  const handleCLick = e => {
-    e.preventDefault()
-    navigate('/room-vote')
-  }
   const handleGoBack = () => {
-    navigate(-1)
+    navigate('/contact')
   }
   const onClose = () => {
     setShow(false)
     setShows(false)
   }
+
+  React.useEffect(() => {
+    if (!currLocation || !nickname) {
+      navigate('/contact')
+    }
+  })
 
   const formik = useFormik({
     initialValues: {
@@ -67,109 +62,173 @@ function GroupForm() {
     }),
     onSubmit: values => {
       if (locationVote.length > 0) {
-        addDocument('rooms', {
-          title: values.label,
-          description: values.content,
-          max_location: 5,
-          vote_status: true,
-          member: [uid],
-          user_id: uid
-        })
-        navigate('/')
+        db.collection('rooms')
+          .add({
+            title: values.label,
+            description: values.content,
+            max_location: 5,
+            vote_status: true,
+            member: [],
+            user_id: uid
+          })
+          .then(docRef => {
+            console.log('Document written with ID: ', docRef.id)
+            addDocument('user_room', {
+              currentLocation: currLocation,
+              nickname: nickname,
+              avatar: photoURL,
+              user_id: uid,
+              room_id: docRef.id
+            })
+            setNickName('')
+            setCurrLocation('')
+            setSelectedRoomId('')
+            navigate(`/room-vote/${docRef.id}`)
+          })
+          .catch(error => {
+            console.error('Error adding document: ', error)
+          })
       } else {
         alert('bạn cần nhập địa chỉ')
       }
-      // alert(JSON.stringify(values, null, 2))
     }
   })
+
+  const onDelete = value => {
+    //  db.child(`location/${value}`).remove();
+    console.log(locationVote)
+    // const item = locationVot
+    // const item =[];
+    for (let i = 0; i < locationVote.length; i++) {
+      if (locationVote[i] === value) {
+        locationVote.splice(i, 1)
+        break
+      }
+    }
+    setLocationVote([...locationVote])
+
+    // const deleteAddress = firebase.database().ref('user_room').child(locationVote.id)
+    // const item = locationVote.pop();
+    // console.log(locationVote)
+    // setLocationVote(item =>[...item])
+
+    // deleteAddress.remove()
+    // locationVote.remove()
+    // setLocationVote(locationVote)
+    // setShow(false);
+    // console.log(deleteAddress)
+  }
+  const handleEdit = (value, index) => {
+    console.log(value, index)
+    // const updateLocation = [...locationVote]
+    // updateLocation[index] = value
+    // setLocationVote(updateLocation)
+    SetValue(value)
+    SetIndex(index)
+    setShow(true)
+  }
+
   return (
-    <div className="login_form">
+    <div className="add_form">
       <div className="krqetT"></div>
       <div className="ifKAln"></div>
       <LogOut />
       <Container>
-        <Row>
-          <Col md={2}></Col>
-          <Col md={8}>
-            <form onSubmit={formik.handleSubmit}>
-              <div className="login_wrapper">
-                <div className="formsix-pos">
-                  <div className="form-group">
-                    <InputForm
-                      type="text"
-                      id="Text1"
-                      placeholder="Tiêu đề *"
-                      name="label"
-                      defaultValue={formik.values.label}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                    {formik.errors.label && formik.touched.label && <p className="msg_err">{formik.errors.label}</p>}
+        <div className="form_bg">
+          <Row>
+            <Col lg={7} className="div_bg">
+              <img
+                src={'http://moitruongdulich.vn/mypicture/images/2020/CNMN42020/185ISO-21401.jpg'}
+                className="img_bg"
+              />
+            </Col>
+            <Col lg={5} className="form_left">
+              <form onSubmit={formik.handleSubmit}>
+                <div className="login_wrapper">
+                  <div className="formsix-pos">
+                    <div className="form-group">
+                      <InputForm
+                        type="text"
+                        id="Text1"
+                        placeholder="Tiêu đề *"
+                        name="label"
+                        defaultValue={formik.values.label}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                      {formik.errors.label && formik.touched.label && <p className="msg_err">{formik.errors.label}</p>}
+                    </div>
                   </div>
-                </div>
-                <div className="formsix-e">
-                  <div className="form-group i-password">
-                    <InputForm
-                      type="text"
-                      id="Text2"
-                      placeholder="Nội dung *"
-                      name="content"
-                      defaultValue={formik.values.content}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                    {formik.errors.content && formik.touched.content && (
-                      <p className="msg_err">{formik.errors.content}</p>
-                    )}
+                  <div className="formsix-e">
+                    <div className="form-group i-password">
+                      <InputForm
+                        type="text"
+                        id="Text2"
+                        placeholder="Nội dung *"
+                        name="content"
+                        defaultValue={formik.values.content}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                      {formik.errors.content && formik.touched.content && (
+                        <p className="msg_err">{formik.errors.content}</p>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="login_btn_wrapper" style={{ textAlign: 'left' }}>
-                  <a href="#" className="btn btn-primary" onClick={() => setShows(true)}>
-                    Thêm địa điểm
-                  </a>
-                  <ModalForm
-                    show={shows}
-                    onHide={() => setShows(false)}
-                    ModalTile={''}
-                    ModalChildren={<MapboxLocationVote onClose={onClose} />}
-                    size="xl"
-                  />
-                </div>
+                  <div className="login_btn_wrapper" style={{ textAlign: 'left' }}>
+                    <a href="#" className="btn btn-primary" onClick={() => setShows(true)}>
+                      Thêm địa điểm
+                    </a>
+                    <ModalForm
+                      show={shows}
+                      onHide={() => setShows(false)}
+                      ModalTile={''}
+                      ModalChildren={<MapboxLocationVote onClose={onClose} value={value} index={index} />}
+                      size="xl"
+                    />
+                  </div>
 
-                <div className="address_vote">
-                  {locationVote.map(value => (
-                    <button type="button" key={`${value} +1`} className="btn_address" onClick={() => setShow(true)}>
-                      {value}
+                  <div className="address_vote">
+                    {locationVote.map((value, index) => (
+                      <div className="location_adrress" key={index}>
+                        <button type="button" className="btn_address" onClick={() => handleEdit(value, index)}>
+                          {value}
+                        </button>
+                        <button type="button" onClick={() => onDelete(`${value}`)} className="btn_delete_address">
+                          {' '}
+                          <span className="icon_delete">X</span>{' '}
+                        </button>
+                      </div>
+                    ))}
+
+                    <ModalForm
+                      
+                      show={show}
+                      onHide={() => setShow(false)}
+                      ModalTile={''}
+                      ModalChildren={<Mapbox onClose={onClose} value={value} index={index} />}
+                      size="xl"
+                    />
+                  </div>
+
+                  <div className="login_btn_wrapper" style={{ marginTop: '50px' }}>
+                    <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
+                      Trở Về
                     </button>
-                  ))}
-
-                  <ModalForm
-                    show={show}
-                    onHide={() => setShow(false)}
-                    ModalTile={''}
-                    ModalChildren={<Mapbox onClose={onClose} />}
-                    size="xl"
-                  />
+                    <button
+                      type="submit"
+                      className="btn login_btn"
+                      disabled={!(formik.isValid && formik.dirty && locationVote.length != 0)}
+                    >
+                      TẠO PHÒNG BÌNH CHỌN
+                    </button>
+                  </div>
                 </div>
-
-                <div className="login_btn_wrapper" style={{ marginTop: '50px' }}>
-                  <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
-                    Trở Về
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn login_btn"
-                    disabled={!(formik.isValid && formik.dirty && locationVote.length != 0)}
-                  >
-                    TẠO PHÒNG BÌNH CHỌN
-                  </button>
-                </div>
-              </div>
-            </form>
-          </Col>
-          <Col md={2}></Col>
-        </Row>
+              </form>
+            </Col>
+          </Row>
+        </div>
       </Container>
     </div>
   )
