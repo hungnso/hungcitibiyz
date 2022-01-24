@@ -36,10 +36,10 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
 
   const [voteStatus, setvoteStatus] = useState(true)
 
-   const [value, SetValue] = useState('')
+  const [value, SetValue] = useState('')
   const [index, SetIndex] = useState('')
 
-  const room =db.collection("rooms")
+  const room = db.collection('rooms')
   const [hung, setHung] = useState()
   const onClose = () => {
     setShow2(false)
@@ -128,8 +128,6 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     //delete all data room_id, user_room...
   }
 
-    
-
   const dataVoteWin = db.collection('locations')
   const getDataVote = () => {
     dataVoteWin
@@ -167,9 +165,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   }, [listMember, userLogin, memberInRoom])
 
   setCurrRoom(valueRoom)
- 
-  
-  
+
   //Kết thúc vote
   const handleEndVote = e => {
     e.preventDefault()
@@ -183,14 +179,14 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
         vote_status: false
       })
       .then(() => {
-          console.log("Document successfully updated!");
-      }) 
+        console.log('Document successfully updated!')
+      })
+  }
+
+  const handleConfim = e => {
+    if (window.confirm('Bạn có muốn kết thúc bình chọn')) {
+      handleEndVote(e)
     }
-    
-    const handleConfim = e => {
-      if(window.confirm("Bạn có muốn kết thúc bình chọn")){
-        handleEndVote(e)
-      }
   }
 
   const handleCheckBox = e => {
@@ -253,7 +249,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
             {listAdd.map(location => (
               <div className="vote_room" key={location.id}>
                 <input
-                  className={isActive ?"login_btn_none":"custom"}
+                  className={isActive ? 'login_btn_none' : 'custom'}
                   type="checkbox"
                   value={location.id}
                   onClick={e => handleCheckBox(e)}
@@ -282,14 +278,19 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
           </div>
 
           <div className="btnShareLink">
-            <button type="submit" class={isActive ?"login_btn_none":"btn login_btn"} style={{ width: '95%' }}  onClick={() => setShow2(true)}>
+            <button
+              type="submit"
+              class={isActive ? 'login_btn_none' : 'btn login_btn'}
+              style={{ width: '95%' }}
+              onClick={() => setShow2(true)}
+            >
               Thêm địa Chỉ
             </button>
             <ModalForm
               show={show2}
               onHide={() => setShow2(false)}
               ModalTile={''}
-              ModalChildren={<MapboxLocationVote onClose={onClose} value={value} index={index}/>}
+              ModalChildren={<MapboxLocationVote onClose={onClose} value={value} index={index} />}
               size="xl"
             />
           </div>
@@ -308,7 +309,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
             />
           </div>
 
-          <div className={isActive ?"btnEndVote_none":"btnEndVote"}>
+          <div className={isActive ? 'btnEndVote_none' : 'btnEndVote'}>
             {isHost?.title ? (
               <button class="btn login_btn" type="submit" disabled={isActive} onClick={handleConfim}>
                 Kết thúc
