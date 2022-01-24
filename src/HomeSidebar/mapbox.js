@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useCallback } from 'react'
 import { StaticMap, Marker, FlyToInterpolator } from 'react-map-gl'
 import { useState } from 'react'
 import { AppContext } from '../Context/AppProvider'
+import { AuthContext } from '../Context/AuthProvider'
 import axios from 'axios'
 import DeckGL from '@deck.gl/react'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import './homeSidebar.css'
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 function Mapbox({ currRoom, params, focusLocation }) {
   const [viewport, setViewport] = useState({
@@ -14,15 +16,19 @@ function Mapbox({ currRoom, params, focusLocation }) {
     height: '100vh',
     latitude: 21.0164909,
     longitude: 105.7772149,
-    zoom: 16,
+    zoom: 10,
     transitionDuration: 100
   })
 
   const token = 'pk.eyJ1IjoidHJhbm5oYW4xMiIsImEiOiJja3k5cnd6M2QwOWN4MnZxbWJianJvNTgxIn0.ubgU2PdV-ahm1liOZLyjMw'
   const [newAddress, setNewAddress] = useState([])
   const [newMember, setNewMember] = useState([])
+  const [userCoord, setUserCoord] = useState('')
   const { list, Member } = useContext(AppContext)
   const [coordFocusLocation, setCoordFocusLocation] = useState('')
+  const {
+    user: { uid }
+  } = React.useContext(AuthContext)
 
   useEffect(() => {
     let newS = []
@@ -42,7 +48,7 @@ function Mapbox({ currRoom, params, focusLocation }) {
     })
     setNewAddress(newS)
   }, [list])
-  console.log(Member)
+
   useEffect(() => {
     let newS = []
     Member.map(address => {
@@ -61,9 +67,22 @@ function Mapbox({ currRoom, params, focusLocation }) {
     })
     setNewMember(newS)
   }, [Member])
+  console.log('newMember: ', newMember)
+  console.log('userId: ', uid)
 
-  console.log('newMember', newMember)
-
+  // Get coordinates of user
+  useEffect(() => {
+    newMember.map(userItem => {
+      console.log('newMember: ', newMember)
+      console.log('userId: ', uid)
+      console.log(userItem)
+      if (userItem.user_id === uid) {
+        setUserCoord(`${userItem.longitude},${userItem.latitude}`)
+        return true
+      }
+    })
+  }, [])
+  console.log(userCoord)
   // Zoom location when focus location
   // const onFocusLocation = useCallback(({ longitude, latitude }) => {
   //   setViewport({
@@ -80,7 +99,7 @@ function Mapbox({ currRoom, params, focusLocation }) {
     axios
       .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${nameLocation}.json?access_token=${token}`)
       .then(function (response) {
-        const newCoordFocusLocation = `105.856789,21.015496;${response.data.features[0].center[0]},${response.data.features[0].center[1]}`
+        const newCoordFocusLocation = `${userCoord};${response.data.features[0].center[0]},${response.data.features[0].center[1]}`
         setCoordFocusLocation(newCoordFocusLocation)
       })
       .catch(function (error) {
@@ -154,24 +173,18 @@ function Mapbox({ currRoom, params, focusLocation }) {
         >
           {newAddress.map(val => {
             return (
-              <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={0} offsetRight={0}>
+              <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={-10} offsetTop={-28}>
                 <div>
-                  <img
-                    style={{ height: 40, width: 40 }}
-                    src="https://i0.wp.com/www.carewellurgentcare.com/wp-content/uploads/2016/09/blue-location-icon-Location_marker_pin_map_gps.png?ssl=1"
-                  />
+                  <FaMapMarkerAlt className="marker marker_location" />
                 </div>
               </Marker>
             )
           })}
           {newMember.map(val => {
             return (
-              <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={0} offsetRight={0}>
+              <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={-10} offsetTop={-28}>
                 <div>
-                  <img
-                    style={{ height: 40, width: 40 }}
-                    src="https://xuonginthanhpho.com/wp-content/uploads/2020/03/map-marker-icon.png"
-                  />
+                  <FaMapMarkerAlt className="marker marker_user" />
                 </div>
               </Marker>
             )

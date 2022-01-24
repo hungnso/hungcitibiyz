@@ -276,8 +276,17 @@ h3.titel_banner {
   display: none;
 }
 
-.contendisable{
-   display: none;
-    width: 0;
-    height: 0;
+.contendisable {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.marker {
+  font-size: 20px;
+}
+.marker_user {
+  color: red;
+}
+.marker_locaiton {
+  color: #8f4dcc;
 }
