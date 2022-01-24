@@ -11,6 +11,7 @@ import useCurrAdd from '../hooks/useCurrAdd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import LogOut from '../components/LogOut'
+import { FaVoteYea, FaClipboardList } from 'react-icons/fa'
 
 function Home() {
   const {
@@ -152,13 +153,15 @@ function Home() {
           <div className="home_left">
             <div className="home_item">
               <button onClick={e => handleCLick(e)} className="btn_add">
-                <span>Cuộc Bình Chọn Mới</span>
+                <span>
+                  <FaVoteYea /> Cuộc Bình Chọn Mới
+                </span>
               </button>
               <form onSubmit={formik.handleSubmit}>
                 <InputForm
                   type="text"
                   id="Text1"
-                  placeholder="Nhập mã phòng tại đây"
+                  placeholder=" Nhập mã phòng tại đây"
                   name="content"
                   defaultValue={formik.values.content}
                   onChange={formik.handleChange}

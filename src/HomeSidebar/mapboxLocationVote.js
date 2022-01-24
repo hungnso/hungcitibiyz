@@ -7,11 +7,12 @@ import Geocoder from 'react-map-gl-geocoder'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import './style.css'
 import { AppContext } from '../Context/AppProvider'
-import { useNavigate } from 'react-router-dom'
+import { db } from '../firebase/config'
 
-function Mapbox({ setShow,onClose }) {
-  const { curraddName, setCurrAddName, setLocationVote,locationVote } = useContext(AppContext)
-  let navigate = useNavigate()
+import { useNavigate, useParams } from 'react-router-dom'
+function MapboxLocationVote({ setShow, onClose }) {
+  const {  setLocationVote,locationVote } = useContext(AppContext)
+  const params = useParams()
   // Token
   var token = 'pk.eyJ1IjoiY29udG90IiwiYSI6ImNreWFvamp0dDAwbnIyb210OGdkbjUxc2oifQ.4h9mS6yDTwWeWFpHyJ_6EQ'
   // Marker
@@ -28,8 +29,9 @@ function Mapbox({ setShow,onClose }) {
     bearing: 0,
     pitch: 0
   })
-
   
+ 
+
   // Drag
   var [events, logEvents] = useState({})
   var onMarkerDragStart = useCallback(event => {
@@ -59,7 +61,7 @@ function Mapbox({ setShow,onClose }) {
         console.log(error)
       })
   }, [marker, token])
-
+ 
   // Zoom when search
   var geocoderContainerRef = useRef()
   var mapRef = useRef()
@@ -86,20 +88,44 @@ function Mapbox({ setShow,onClose }) {
     SetnameAddress(location.result.place_name)
   }
 
-  // Submit location
+  //Kiểm tra tồn tại địa chỉ chưa
 
-  var handleSubmitLocation = (e) => {
-    e.preventDefault();
+  
+
+  const  [locationVoteHome, setlocationVoteHome] = useState([])
+  React.useEffect(() => {
+    db.collection("locations").where("room_id","==",params.id).get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          // console.log(doc.data())
+          const data =doc.data().location
+          setlocationVoteHome(prev => [...prev,data ])
+          
+      });
+    }); 
+  }, [])
+
+
+
+  var handleSubmitLocation = e => {
+    
+    e.preventDefault()
     console.log(marker.latitude)
     console.log(marker.longitude)
-    console.log(nameAddress)
-      setCurrAddName(nameAddress)
+    console.log(locationVoteHome)
+    console.log(locationVoteHome.includes(nameAddress))
+    if (!locationVoteHome.includes(nameAddress) && locationVoteHome.length <= 4) {
+      setLocationVote(prev => [...prev, nameAddress])
+    } else if (locationVoteHome.length > 4) {
+      alert('Bạn chỉ đc nhập tối đa 5 địa chỉ trong home')
+    } else {
+      alert('Địa chỉ trùng lắp')
+    }
 
     onClose()
-    
+    //   }
+    // }
   }
  
-  // Return
   return (
     <div>
       <div className="container_map">
@@ -142,10 +168,10 @@ function Mapbox({ setShow,onClose }) {
           </div>
         </div>
       </div>
-      <button type="submit" className="btnAdd"   onClick={e =>handleSubmitLocation(e)}>
-        {curraddName? "Sửa địa điểm" : "Thêm địa điểm"}
+      <button className="btnAdd" onClick={e => handleSubmitLocation(e)}>
+        Thêm địa điểm
       </button>
     </div>
-  ) 
+  )
 }
-export default Mapbox
+export default MapboxLocationVote

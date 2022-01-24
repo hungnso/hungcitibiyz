@@ -7,11 +7,11 @@ import Geocoder from 'react-map-gl-geocoder'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import './style.css'
 import { AppContext } from '../Context/AppProvider'
+import { useNavigate, useParams } from 'react-router-dom'
 
-function MapboxLocationVote({ setShow, onClose, listAdd }) {
-  console.log(listAdd)
-  const { setLocationVote, locationVote } = useContext(AppContext)
-
+function MapboxLocationVote({ setShow, onClose }) {
+  const { curraddName, setCurrAddName, setLocationVote, locationVote, currLocation } = useContext(AppContext)
+  const params = useParams()
   // Token
   var token = 'pk.eyJ1IjoiY29udG90IiwiYSI6ImNreWFvamp0dDAwbnIyb210OGdkbjUxc2oifQ.4h9mS6yDTwWeWFpHyJ_6EQ'
   // Marker
@@ -28,6 +28,7 @@ function MapboxLocationVote({ setShow, onClose, listAdd }) {
     bearing: 0,
     pitch: 0
   })
+
   // Drag
   var [events, logEvents] = useState({})
   var onMarkerDragStart = useCallback(event => {
@@ -99,7 +100,6 @@ function MapboxLocationVote({ setShow, onClose, listAdd }) {
     } else {
       alert('Địa chỉ trùng lắp')
     }
-
     onClose()
   }
   //

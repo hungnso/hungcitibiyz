@@ -20,7 +20,8 @@ function Mapbox({ currRoom, params, focusLocation }) {
 
   const token = 'pk.eyJ1IjoidHJhbm5oYW4xMiIsImEiOiJja3k5cnd6M2QwOWN4MnZxbWJianJvNTgxIn0.ubgU2PdV-ahm1liOZLyjMw'
   const [newAddress, setNewAddress] = useState([])
-  const { list } = useContext(AppContext)
+  const [newMember, setNewMember] = useState([])
+  const { list, Member } = useContext(AppContext)
   const [coordFocusLocation, setCoordFocusLocation] = useState('')
 
   useEffect(() => {
@@ -41,6 +42,27 @@ function Mapbox({ currRoom, params, focusLocation }) {
     })
     setNewAddress(newS)
   }, [list])
+  console.log(Member)
+  useEffect(() => {
+    let newS = []
+    Member.map(address => {
+      axios
+        .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address.currentLocation}.json?access_token=${token}`)
+        .then(function (response) {
+          newS.push({
+            ...address,
+            longitude: response.data.features[0].center[0],
+            latitude: response.data.features[0].center[1]
+          })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    })
+    setNewMember(newS)
+  }, [Member])
+
+  console.log('newMember', newMember)
 
   // Zoom location when focus location
   // const onFocusLocation = useCallback(({ longitude, latitude }) => {
@@ -137,6 +159,18 @@ function Mapbox({ currRoom, params, focusLocation }) {
                   <img
                     style={{ height: 40, width: 40 }}
                     src="https://i0.wp.com/www.carewellurgentcare.com/wp-content/uploads/2016/09/blue-location-icon-Location_marker_pin_map_gps.png?ssl=1"
+                  />
+                </div>
+              </Marker>
+            )
+          })}
+          {newMember.map(val => {
+            return (
+              <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={0} offsetRight={0}>
+                <div>
+                  <img
+                    style={{ height: 40, width: 40 }}
+                    src="https://xuonginthanhpho.com/wp-content/uploads/2020/03/map-marker-icon.png"
                   />
                 </div>
               </Marker>

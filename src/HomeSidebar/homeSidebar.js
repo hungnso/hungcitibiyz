@@ -8,6 +8,8 @@ import useFirestore from '../hooks/useFirestore'
 import { addDocument } from '../firebase/services'
 import { AuthContext } from '../Context/AuthProvider'
 import { db } from '../firebase/config'
+import MapboxLocationVote from './mapboxLocationVote'
+import { query, orderBy, where, limit } from 'firebase/firestore'
 import useGetDataFirebase from '../hooks/useGetDataFirebase'
 import MapLocationSidebar from '../MapAddAddress/mapLocationSidebar'
 
@@ -38,6 +40,10 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
 
   const room = db.collection('rooms')
 
+  const [value, SetValue] = useState('')
+  const [index, SetIndex] = useState('')
+
+  const [hung, setHung] = useState()
   const onClose = () => {
     setShow2(false)
   }
@@ -245,10 +251,9 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
             <h2>{valueRoom.description}</h2>
           </div>
 
-          <div className={isActive ? 'home-sidebar-content' : 'contendisable'}>
-            <h4>Địa điểm được chọn nhiều nhất</h4>
-            <hr />
-            <h5>{voteWin.location}</h5>
+          <div className={isActive ? 'home-sidebar-location' : 'contendisable'}>
+            <h3 className="titel_banner">Địa điểm được chọn nhiều nhất</h3>
+            <h5 className="addressVote">{voteWin.location}</h5>
           </div>
 
           <h3 className="titel_banner">Danh Sách Địa Chỉ Bình Chọn</h3>
@@ -256,16 +261,20 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
             {listAdd.map(location => (
               <div className="vote_room" key={location.id}>
                 <input
-                  className="custom"
+                  className={isActive ? 'login_btn_none' : 'custom'}
                   type="checkbox"
                   value={location.id}
                   onClick={e => handleCheckBox(e)}
                   defaultChecked={location.vote_users.includes(uid)}
+                  key={location.id}
+                  id={location.id}
+                  disabled={isActive}
                 />
-                <div className="div_vote" htmlFor={location.id} onClick={() => handleFocusLocation(location.location)}>
+
+                <label onClick={() => handleFocusLocation(location.location)} htmlFor={location.id}>
                   {location.location}
-                </div>
-                <h5 className="quantilyVote_room">{location.vote_users.length}</h5>
+                  <h5 className="quantilyVote_room">{location.vote_users.length}</h5>
+                </label>
               </div>
             ))}
           </div>
@@ -315,9 +324,9 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
             />
           </div>
 
-          <div className="btnEndVote">
+          <div className={isActive ? 'btnEndVote_none' : 'btnEndVote'}>
             {isHost?.title ? (
-              <button type="submit" disabled={isActive} onClick={handleConfim}>
+              <button class="btn login_btn" type="submit" disabled={isActive} onClick={handleConfim}>
                 Kết thúc
               </button>
             ) : (

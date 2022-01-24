@@ -11,6 +11,7 @@ export default function AppProvider({ children }) {
   const [list, setList] = useState([])
   const [currLocation, setCurrLocation] = useState('')
   const [nickname, setNickName] = useState('')
+  const [Member, setMember] = useState([])
 
   const {
     user: { uid }
@@ -67,7 +68,9 @@ export default function AppProvider({ children }) {
         currLocation,
         setCurrLocation,
         nickname,
-        setNickName
+        setNickName,
+        Member,
+        setMember
       }}
     >
       {children}
