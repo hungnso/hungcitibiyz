@@ -30,7 +30,6 @@ function GroupForm() {
 
   const [nameAddress, SetnameAddress] = useState('')
 
-
   const handleGoBack = () => {
     navigate('/contact')
   }
@@ -68,7 +67,8 @@ function GroupForm() {
             description: values.content,
             max_location: 5,
             vote_status: true,
-            member: [],
+            member: [uid],
+            client: [],
             user_id: uid
           })
           .then(docRef => {
@@ -203,7 +203,6 @@ function GroupForm() {
                     ))}
 
                     <ModalForm
-                      
                       show={show}
                       onHide={() => setShow(false)}
                       ModalTile={''}

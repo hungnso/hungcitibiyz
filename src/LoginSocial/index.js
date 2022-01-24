@@ -8,12 +8,14 @@ import './styles.css'
 const fbProvider = new firebase.auth.FacebookAuthProvider()
 const googleProvider = new firebase.auth.GoogleAuthProvider()
 
+const roomId = localStorage.getItem('roomId')
+
 function LoginSocial({ setIsAuth }) {
   const navigate = useNavigate()
 
   const handleLogin = async provider => {
     const { additionalUserInfo, user } = await auth.signInWithPopup(provider)
-    navigate('/')
+    roomId ? navigate(`/room-vote/${roomId}`) : navigate('/')
 
     if (additionalUserInfo?.isNewUser && user) {
       addDocument('users', {

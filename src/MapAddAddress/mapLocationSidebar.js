@@ -7,9 +7,9 @@ import Geocoder from 'react-map-gl-geocoder'
 import { FaMapMarkerAlt } from 'react-icons/fa'
 import './style.css'
 import { AppContext } from '../Context/AppProvider'
+import { addDocument } from '../firebase/services'
 
-function MapboxLocationVote({ setShow, onClose, listAdd }) {
-  console.log(listAdd)
+function MapLocationSidebar({ setShow, onClose, listAdd, params, uid, setListAdd }) {
   const { setLocationVote, locationVote } = useContext(AppContext)
 
   // Token
@@ -88,17 +88,26 @@ function MapboxLocationVote({ setShow, onClose, listAdd }) {
 
   var handleSubmitLocation = e => {
     e.preventDefault()
+    if (listAdd.find(list => list.location === nameAddress)) {
+      alert('Địa chỉ này đã tồn tại')
+    } else {
+      setLocationVote(prev => [...prev, nameAddress])
+      if (listAdd.length > 4) {
+        alert('Chỉ được thêm tối đa 5 địa chỉ')
+      }
+    }
+
     // console.log(marker.latitude)
     // console.log(marker.longitude)
     // console.log(nameAddress)
-    console.log(locationVote.includes(nameAddress))
-    if (!locationVote.includes(nameAddress) && locationVote.length <= 4) {
-      setLocationVote(prev => [...prev, nameAddress])
-    } else if (locationVote.length > 4) {
-      alert('Bạn chỉ đc nhập tối đa 5 địa chỉ')
-    } else {
-      alert('Địa chỉ trùng lắp')
-    }
+
+    // if (!locationVote.includes(nameAddress) && locationVote.length <= 4) {
+    //   setLocationVote(prev => [...prev, nameAddress])
+    // } else if (locationVote.length > 4) {
+    //   alert('Bạn chỉ đc nhập tối đa 5 địa chỉ')
+    // } else {
+    //   alert('Địa chỉ trùng lắp')
+    // }
 
     onClose()
   }
@@ -153,4 +162,4 @@ function MapboxLocationVote({ setShow, onClose, listAdd }) {
     </div>
   )
 }
-export default MapboxLocationVote
+export default MapLocationSidebar

@@ -130,9 +130,9 @@ function Mapbox({ currRoom, params, focusLocation }) {
           mapboxApiAccessToken={token}
           onViewportChange={setViewport}
         >
-          {newAddress.map(val => {
+          {newAddress.map((val, index) => {
             return (
-              <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={0} offsetRight={0}>
+              <Marker key={index} latitude={val.latitude} longitude={val.longitude} offsetLeft={0} offsetRight={0}>
                 <div>
                   <img
                     style={{ height: 40, width: 40 }}
@@ -147,4 +147,4 @@ function Mapbox({ currRoom, params, focusLocation }) {
     </div>
   )
 }
-export default Mapbox
+export default React.memo(Mapbox)
