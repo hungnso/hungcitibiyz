@@ -36,7 +36,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
 
   const [voteStatus, setvoteStatus] = useState(true)
 
-  const room = db.collection("rooms")
+  const room = db.collection('rooms')
   const [hung, setHung] = useState()
   const onClose = () => {
     setShow2(false)
@@ -176,7 +176,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     db.collection('rooms')
       .doc(params.id)
       .update({
-        "vote_status": false
+        vote_status: false
       })
       .then(() => {
         console.log('Document successfully updated!')
@@ -219,7 +219,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
         console.log('Transaction failed: ', error)
       })
   }
-  console.log(isActive)
+  // console.log('isActive', isActive)
 
   // Display route from user to entertainment venues
   const handleFocusLocation = location => {
@@ -239,10 +239,9 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
             <h2>{valueRoom.description}</h2>
           </div>
 
-          <div className={isActive ? 'home-sidebar-content' : 'contendisable'}>
-            <h4>Địa điểm được chọn nhiều nhất</h4>
-            <hr />
-            <h5>{voteWin.location}</h5>
+          <div className={isActive ? 'home-sidebar-location' : 'contendisable'}>
+            <h3 className="titel_banner">Địa điểm được chọn nhiều nhất</h3>
+            <h5 className="addressVote">{voteWin.location}</h5>
           </div>
 
           <h3 className="titel_banner">Danh Sách Địa Chỉ Bình Chọn</h3>
@@ -255,11 +254,15 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
                   value={location.id}
                   onClick={e => handleCheckBox(e)}
                   defaultChecked={location.vote_users.includes(uid)}
+                  key={location.id}
+                  id={location.id}
+                  disabled={isActive}
                 />
-                <div className="div_vote" htmlFor={location.id} onClick={() => handleFocusLocation(location.location)}>
+
+                <label onClick={() => handleFocusLocation(location.location)} htmlFor={location.id}>
                   {location.location}
-                </div>
-                <h5 className="quantilyVote_room">{location.vote_users.length}</h5>
+                  <h5 className="quantilyVote_room">{location.vote_users.length}</h5>
+                </label>
               </div>
             ))}
           </div>
@@ -303,15 +306,12 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
 
           <div className="btnEndVote">
             {isHost?.title ? (
-              <button type="submit" disabled={isActive} onClick={handleConfim}>
+              <button class="btn login_btn" type="submit" disabled={isActive} onClick={handleConfim}>
                 Kết thúc
               </button>
             ) : (
               ''
             )}
-          </div>
-
-          <div className="btnEndVote">
             <button type="submit" class="btn login_btn" onClick={handleGoBack}>
               <span>Quay lại</span>
             </button>

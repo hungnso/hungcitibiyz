@@ -78,7 +78,7 @@
   font-size: 15px;
 }
 .vote_room {
-  /* display: flex; */
+  display: flex;
   position: relative;
   cursor: pointer;
   margin-bottom: 15px;
@@ -92,9 +92,8 @@
 
 .quantilyVote_room {
   border-radius: 50%;
-  width: 20px;
+  width: 40px;
   height: 20px;
-  position: absolute;
   right: -5px;
   background-color: rgb(81, 81, 70, 0.2);
   font-size: 15px;
@@ -110,9 +109,9 @@
   height: calc(100% - 25px);
 }
 .maps {
-  width: 75vw;
+  width: 75%;
   height: 100vh;
-  /* overflow-y: hidden; */
+  overflow-y: hidden;
 }
 .homeView {
   text-align: center;
@@ -121,22 +120,19 @@
   width: 100%;
 }
 
+.btnEndVote {
+  display: flex;
+  justify-content: space-around;
+}
 .btnEndVote button {
   width: 45%;
   height: 50px;
-  margin-top: 55px;
   border-radius: 8px;
   border: 1px solid;
   font-size: 18px;
   background-color: #ffffff;
   position: relative;
-  margin-bottom: 25px;
-}
-
-.btnEndVote button:hover {
-  background-color: #f4511e;
-  color: #fff;
-  border: none;
+  margin: 25px 0;
 }
 
 .btnAddLocation button {
@@ -194,6 +190,10 @@ h3.titel_banner {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-bottom: 15px;
+}
+.vote_people:last-child {
+  margin-bottom: 0;
 }
 .img_people {
   width: 50px;
@@ -202,21 +202,16 @@ h3.titel_banner {
 }
 /*checkbox*/
 .custom {
-  /* opacity: 0; */
+  opacity: 0;
   position: relative;
-  display: inline-block;
 }
-/* .custom + label {
+.custom + label {
   display: flex;
   align-items: center;
   cursor: pointer;
   position: relative;
   font-size: 14px;
   color: #2e3553;
-} */
-.div_vote {
-  display: inline-block;
-  padding-right: 15px;
 }
 .custom[type='checkbox'] + label::before {
   content: '';
@@ -289,4 +284,9 @@ h3.titel_banner {
 }
 .marker_locaiton {
   color: #8f4dcc;
+}
+.addressVote {
+  font-size: 18px;
+  color: #2e3553;
+  padding: 10px;
 }
