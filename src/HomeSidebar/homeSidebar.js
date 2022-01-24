@@ -11,7 +11,6 @@ import { db } from '../firebase/config'
 import MapboxLocationVote from './mapboxLocationVote'
 import { query, orderBy, where, limit } from 'firebase/firestore'
 import useGetDataFirebase from '../hooks/useGetDataFirebase'
-import MapLocationSidebar from '../MapAddAddress/mapLocationSidebar'
 
 const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
   const navigate = useNavigate()
@@ -297,15 +296,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
               show={show2}
               onHide={() => setShow2(false)}
               ModalTile={''}
-              ModalChildren={
-                <MapLocationSidebar
-                  onClose={onClose}
-                  setListAdd={setListAdd}
-                  listAdd={listAdd}
-                  params={params}
-                  uid={uid}
-                />
-              }
+              ModalChildren={<MapboxLocationVote onClose={onClose} value={value} index={index} />}
               size="xl"
             />
           </div>
