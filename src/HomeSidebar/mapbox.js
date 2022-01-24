@@ -8,38 +8,26 @@ import DeckGL from '@deck.gl/react'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import './homeSidebar.css'
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt } from 'react-icons/fa'
 
-function Mapbox({ currRoom, params, focusLocation }) {
+function Mapbox({ focusLocation }) {
   const [viewport, setViewport] = useState({
     width: '75vw',
     height: '100vh',
     latitude: 21.0164909,
     longitude: 105.7772149,
-    zoom: 16,
-    transitionDuration: 100
+    zoom: 16
   })
 
   const token = 'pk.eyJ1IjoidHJhbm5oYW4xMiIsImEiOiJja3k5cnd6M2QwOWN4MnZxbWJianJvNTgxIn0.ubgU2PdV-ahm1liOZLyjMw'
   const [newAddress, setNewAddress] = useState([])
   const [newMember, setNewMember] = useState([])
   const [userCoord, setUserCoord] = useState('')
+  const [focusLocationCoord, setFocusLocationCoord] = useState('')
   const { list, Member } = useContext(AppContext)
-  const [coordFocusLocation, setCoordFocusLocation] = useState('')
   const {
     user: { uid }
   } = React.useContext(AuthContext)
-
-  // Get coordinates of user
-  useEffect(() => {
-    newMember.map(userItem => {
-      console.log(userItem)
-      if (userItem.user_id === uid) {
-        setUserCoord(`${userItem.longitude},${userItem.latitude}`)
-        return true
-      }
-    })
-  }, [])
 
   useEffect(() => {
     let newS = []
@@ -79,44 +67,31 @@ function Mapbox({ currRoom, params, focusLocation }) {
     setNewMember(newS)
   }, [Member])
 
-  console.log('newMember: ', newMember)
-  console.log('userId: ', uid)
-  // Zoom location when focus location
-  // const onFocusLocation = useCallback(({ longitude, latitude }) => {
-  //   setViewport({
-  //     longitude,
-  //     latitude,
-  //     zoom: 11,
-  //     transitionInterpolator: new FlyToInterpolator({ speed: 1.2 }),
-  //     transitionDuration: 'auto'
-  //   })
-  // }, [])
-
-  // Display route from user to entertainment venues
-  useEffect(() => {
-    if (!focusLocation) return
-    setCoordFocusLocation('')
+  // Convert location from name to coordinates
+  const convertLocationName = useCallback(nameLocation => {
     axios
-      .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${focusLocation}.json?access_token=${token}`)
+      .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${nameLocation}.json?access_token=${token}`)
       .then(function (response) {
-        const newCoordFocusLocation = `${userCoord};${response.data.features[0].center[0]},${response.data.features[0].center[1]}`
-        setCoordFocusLocation(newCoordFocusLocation)
+        const newCoordFocusLocation = `105.79845,20.99345;${response.data.features[0].center[0]},${response.data.features[0].center[1]}`
+        setFocusLocationCoord(newCoordFocusLocation)
       })
       .catch(function (error) {
         console.log(error)
       })
-  }, [focusLocation, userCoord])
+  }, [])
 
-  // below, add whatever layers you need to overlay on your map
-  // Make a Map Matching request
-  // console.log('user coordinates: ', userCoord)
-  // console.log('coordFocusLocation: ', userCoord)
+  // Display route from user to entertainment venues
+  useEffect(() => {
+    if (!focusLocation) return
+    setFocusLocationCoord('')
+    convertLocationName(focusLocation)
+  }, [convertLocationName, focusLocation])
 
   async function getMatchingGeometry() {
-    if (!coordFocusLocation) return
+    if (!focusLocationCoord) return
     // Create the query
     const query = await fetch(
-      `https://api.mapbox.com/matching/v5/mapbox/driving/${coordFocusLocation}?&radiuses=25;25&geometries=geojson&steps=true&access_token=${token}`,
+      `https://api.mapbox.com/matching/v5/mapbox/driving/${focusLocationCoord}?&radiuses=25;25&geometries=geojson&steps=true&access_token=${token}`,
       { method: 'GET' }
     )
     const response = await query.json()

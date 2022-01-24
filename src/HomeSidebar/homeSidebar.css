@@ -134,6 +134,22 @@
   position: relative;
   margin: 25px 0;
 }
+.btnEndVote_none button {
+  width: 45%;
+  height: 50px;
+  margin-top: 55px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 18px;
+  background-color: #ffffff;
+  position: relative;
+  margin-bottom: 25px;
+}
+.btnEndVote button:hover {
+  background-color: #f4511e;
+  color: #fff;
+  border: none;
+}
 
 .btnAddLocation button {
   height: 50px;
@@ -284,6 +300,9 @@ h3.titel_banner {
 }
 .marker_locaiton {
   color: #8f4dcc;
+}
+.login_btn_none {
+  display: none;
 }
 .addressVote {
   font-size: 18px;
