@@ -14,7 +14,7 @@ import useGetDataFirebase from '../hooks/useGetDataFirebase'
 
 const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   const navigate = useNavigate()
-  const { locationVote, setLocationVote, selectedRoomId, setList } = React.useContext(AppContext)
+  const { locationVote, setLocationVote, selectedRoomId, setList, setMember } = React.useContext(AppContext)
   // console.log(selectedRoomHost)
   const params = useParams()
   const {
@@ -162,6 +162,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     console.log(listMember)
     console.log(userLogin)
     console.log(memberInRoom)
+    setMember(listMember)
   }, [listMember, userLogin, memberInRoom])
 
   setCurrRoom(valueRoom)
