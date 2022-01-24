@@ -14,7 +14,7 @@ import useGetDataFirebase from '../hooks/useGetDataFirebase'
 
 const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   const navigate = useNavigate()
-  const { locationVote, setLocationVote, selectedRoomId, setList } = React.useContext(AppContext)
+  const { locationVote, setLocationVote, selectedRoomId, setList, setMember } = React.useContext(AppContext)
   // console.log(selectedRoomHost)
   const params = useParams()
   const {
@@ -102,21 +102,16 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   const memberInRoom = useGetDataFirebase('rooms', conditionCheckUser)
   const isHost = listRoomHost.find(value => value.id === params.id)
 
-
- 
-
-
-  React.useEffect(()=>{
-    room.doc(params.id).get().then((doc)=> {
-      console.log(doc.data().vote_status)
-      setActive(!doc.data().vote_status)
-    }); 
+  React.useEffect(() => {
+    room
+      .doc(params.id)
+      .get()
+      .then(doc => {
+        console.log(doc.data().vote_status)
+        setActive(!doc.data().vote_status)
+      })
     getDataVote()
-
-   
-  },[setActive])
-
-
+  }, [setActive])
 
   const arrLocationVoteHost = useFirestore('locations', conditionVote)
 
@@ -135,20 +130,21 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
 
     
 
-  const dataVoteWin =db.collection("locations")
-  const getDataVote =() =>{
-    
-    dataVoteWin.where('room_id' ,'==',params.id).orderBy('num_vote','desc').limit(1).get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            // console.log(doc.data())
-            setVoteWin(doc.data())
-            
-        });
-      }); 
-      
+  const dataVoteWin = db.collection('locations')
+  const getDataVote = () => {
+    dataVoteWin
+      .where('room_id', '==', params.id)
+      .orderBy('num_vote', 'desc')
+      .limit(1)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          // console.log(doc.data())
+          setVoteWin(doc.data())
+        })
+      })
+  }
 
-   }
-    
   /// Lấy ra danh sách người dùng có trong phòng
   // console.log(valueRoom)
   const usersCondition = React.useMemo(() => {
@@ -167,6 +163,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     console.log(listMember)
     console.log(userLogin)
     console.log(memberInRoom)
+    setMember(listMember)
   }, [listMember, userLogin, memberInRoom])
 
   setCurrRoom(valueRoom)
@@ -175,26 +172,27 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   
   //Kết thúc vote
   const handleEndVote = e => {
-      e.preventDefault()
-      getDataVote()
-      
-      setActive(true)
+    e.preventDefault()
+    getDataVote()
 
-      db.collection("rooms").doc(params.id).update({
-        "vote_status": false
+    setActive(true)
+
+    db.collection('rooms')
+      .doc(params.id)
+      .update({
+        vote_status: false
       })
       .then(() => {
           console.log("Document successfully updated!");
       }) 
     }
+    
     const handleConfim = e => {
       if(window.confirm("Bạn có muốn kết thúc bình chọn")){
         handleEndVote(e)
       }
-    }
+  }
 
-
-    
   const handleCheckBox = e => {
     const locationId = e.target.value
     // Create a reference to the locationId doc.
@@ -220,7 +218,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
           }
         })
       })
-      .then(() => { })
+      .then(() => {})
       .catch(error => {
         console.log('Transaction failed: ', error)
       })
@@ -244,19 +242,11 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
             {/* <h2>{selectedRoomHost.description ? selectedRoomHost.description : selectedRoomClient.description}</h2> */}
             <h2>{valueRoom.description}</h2>
           </div>
-        
 
-
-
-          <div className={isActive ? "home-sidebar-content" : "contendisable"}>
-            <h4>Địa điểm được chọn nhiều nhất</h4>
-            <hr/>
-            <h5>{voteWin.location}</h5>
+          <div className={isActive ? 'home-sidebar-location' : 'contendisable'}>
+            <h3 className="titel_banner">Địa điểm được chọn nhiều nhất</h3>
+            <h5 className="addressVote">{voteWin.location}</h5>
           </div>
-
-
-
-
 
           <h3 className="titel_banner">Danh Sách Địa Chỉ Bình Chọn</h3>
           <div className="home-sidebar-location">
@@ -268,11 +258,15 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
                   value={location.id}
                   onClick={e => handleCheckBox(e)}
                   defaultChecked={location.vote_users.includes(uid)}
+                  key={location.id}
+                  id={location.id}
+                  disabled={isActive}
                 />
-                <div className="div_vote" htmlFor={location.id} onClick={() => handleFocusLocation(location.location)}>
+
+                <label onClick={() => handleFocusLocation(location.location)} htmlFor={location.id}>
                   {location.location}
-                </div>
-                <h5 className="quantilyVote_room">{location.vote_users.length}</h5>
+                  <h5 className="quantilyVote_room">{location.vote_users.length}</h5>
+                </label>
               </div>
             ))}
           </div>
@@ -316,15 +310,12 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
 
           <div className={isActive ?"btnEndVote_none":"btnEndVote"}>
             {isHost?.title ? (
-              <button type="submit" disabled={isActive} onClick={handleConfim}>
+              <button class="btn login_btn" type="submit" disabled={isActive} onClick={handleConfim}>
                 Kết thúc
               </button>
             ) : (
               ''
             )}
-          </div>
-
-          <div className="btnEndVote">
             <button type="submit" class="btn login_btn" onClick={handleGoBack}>
               <span>Quay lại</span>
             </button>
