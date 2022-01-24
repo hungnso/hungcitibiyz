@@ -132,7 +132,17 @@
   position: relative;
   margin-bottom: 25px;
 }
-
+.btnEndVote_none button{
+  width: 45%;
+  height: 50px;
+  margin-top: 55px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 18px;
+  background-color: #ffffff;
+  position: relative;
+  margin-bottom: 25px;
+}
 .btnEndVote button:hover {
   background-color: #f4511e;
   color: #fff;
@@ -280,4 +290,7 @@ h3.titel_banner {
    display: none;
     width: 0;
     height: 0;
+}
+.login_btn_none{
+  display: none;
 }

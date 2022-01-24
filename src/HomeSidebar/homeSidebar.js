@@ -8,7 +8,7 @@ import useFirestore from '../hooks/useFirestore'
 import { addDocument } from '../firebase/services'
 import { AuthContext } from '../Context/AuthProvider'
 import { db } from '../firebase/config'
-import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
+import MapboxLocationVote from './mapboxLocationVote'
 import { query, orderBy, where, limit } from 'firebase/firestore'
 import useGetDataFirebase from '../hooks/useGetDataFirebase'
 
@@ -35,6 +35,9 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   const [isActive, setActive] = useState(false)
 
   const [voteStatus, setvoteStatus] = useState(true)
+
+   const [value, SetValue] = useState('')
+  const [index, SetIndex] = useState('')
 
   const room =db.collection("rooms")
   const [hung, setHung] = useState()
@@ -130,9 +133,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     //delete all data room_id, user_room...
   }
 
-    // console.log(listAdd.orderBy("num_vote","decs"))
-
-    // console.log(laydulieu)
+    
 
   const dataVoteWin =db.collection("locations")
   const getDataVote =() =>{
@@ -172,7 +173,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
  
   
   
-  
+  //Kết thúc vote
   const handleEndVote = e => {
       e.preventDefault()
       getDataVote()
@@ -185,15 +186,11 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
       .then(() => {
           console.log("Document successfully updated!");
       }) 
-     
     }
-
     const handleConfim = e => {
       if(window.confirm("Bạn có muốn kết thúc bình chọn")){
         handleEndVote(e)
       }
-      
-     
     }
 
 
@@ -228,7 +225,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
         console.log('Transaction failed: ', error)
       })
   }
-  console.log(isActive)
+  // console.log(isActive)
 
   // Display route from user to entertainment venues
   const handleFocusLocation = location => {
@@ -266,7 +263,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
             {listAdd.map(location => (
               <div className="vote_room" key={location.id}>
                 <input
-                  className="custom"
+                  className={isActive ?"login_btn_none":"custom"}
                   type="checkbox"
                   value={location.id}
                   onClick={e => handleCheckBox(e)}
@@ -291,14 +288,14 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
           </div>
 
           <div className="btnShareLink">
-            <button type="submit" class="btn login_btn" style={{ width: '95%' }} onClick={() => setShow2(true)}>
+            <button type="submit" class={isActive ?"login_btn_none":"btn login_btn"} style={{ width: '95%' }}  onClick={() => setShow2(true)}>
               Thêm địa Chỉ
             </button>
             <ModalForm
               show={show2}
               onHide={() => setShow2(false)}
               ModalTile={''}
-              ModalChildren={<MapboxLocationVote onClose={onClose} />}
+              ModalChildren={<MapboxLocationVote onClose={onClose} value={value} index={index}/>}
               size="xl"
             />
           </div>
@@ -317,7 +314,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
             />
           </div>
 
-          <div className="btnEndVote">
+          <div className={isActive ?"btnEndVote_none":"btnEndVote"}>
             {isHost?.title ? (
               <button type="submit" disabled={isActive} onClick={handleConfim}>
                 Kết thúc

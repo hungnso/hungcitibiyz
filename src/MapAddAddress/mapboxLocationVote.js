@@ -9,9 +9,11 @@ import './style.css'
 import { AppContext } from '../Context/AppProvider'
 import useFirestore from '../hooks/useFirestore'
 
-function MapboxLocationVote({ setShow, onClose }) {
-  const { curraddName, setCurrAddName, setLocationVote,locationVote } = useContext(AppContext)
 
+import { useNavigate, useParams } from 'react-router-dom'
+function MapboxLocationVote({ setShow, onClose }) {
+  const { curraddName, setCurrAddName, setLocationVote,locationVote,currLocation } = useContext(AppContext)
+  const params = useParams()
   // Token
   var token = 'pk.eyJ1IjoiY29udG90IiwiYSI6ImNreWFvamp0dDAwbnIyb210OGdkbjUxc2oifQ.4h9mS6yDTwWeWFpHyJ_6EQ'
   // Marker
@@ -28,6 +30,9 @@ function MapboxLocationVote({ setShow, onClose }) {
     bearing: 0,
     pitch: 0
   })
+  
+ 
+
   // Drag
   var [events, logEvents] = useState({})
   var onMarkerDragStart = useCallback(event => {
@@ -105,62 +110,24 @@ function MapboxLocationVote({ setShow, onClose }) {
   const arrLocationVoteClient = useFirestore('locations', conditionClientVote)
 
   let listLocationVote = [...arrLocationVoteClient, ...arrLocationVoteHost]
-  console.log(listLocationVote)
 
-  const isAddressHome = () => {
-    for (let i = 0; i < listLocationVote.length; i++) {
-      if (listLocationVote[i].location === nameAddress) {
-        return true
-      } else {
-        return false
-      }
-    }
-  }
-
-  // Submit location
-
-  const isAddress = () => {
-    console.log(locationVote)
-    for (let i = 0; i < locationVote.length; i++) {
-      if (locationVote[i] === nameAddress) {
-        return true
-      } else {
-        return false
-      }
-    }
-  }
 
   var handleSubmitLocation = e => {
+    
     e.preventDefault()
     console.log(marker.latitude)
     console.log(marker.longitude)
-    console.log(nameAddress)
     console.log(locationVote.includes(nameAddress))
-    if (!locationVote.includes(nameAddress) && locationVote.length <= 4) {
+    if (!locationVote.includes(nameAddress) && locationVote.length <= 4 ) {
       setLocationVote(prev => [...prev, nameAddress])
     } else if (locationVote.length > 4) {
       alert('Bạn chỉ đc nhập tối đa 5 địa chỉ')
-    } else {
+    }  else {
       alert('Địa chỉ trùng lắp')
     }
-
     onClose()
-    //   }
-    // }
   }
-  const handleSubmitLocation2 = e => {
-    if (isAddress()) {
-      alert('Đã tồn tại địa chỉ này')
-    } else if (isAddressHome()) {
-      alert('Đã tồn tại địa chỉ này')
-    } else if (locationVote.length > 4) {
-      alert('Số địa điểm chỉ được tối đa 5')
-    } else {
-      handleSubmitLocation(e)
-    }
-  }
-
-  // Return
+  
   return (
     <div>
       <div className="container_map">
