@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useCallback } from 'react'
-import { StaticMap, Marker } from 'react-map-gl'
+import { StaticMap, Marker, Source, Layer, ScaleControl } from 'react-map-gl'
 import { useState } from 'react'
 import { AppContext } from '../Context/AppProvider'
 import { AuthContext } from '../Context/AuthProvider'
 import axios from 'axios'
 import DeckGL from '@deck.gl/react'
+import * as turf from '@turf/turf'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import './homeSidebar.css'
@@ -16,7 +17,7 @@ function Mapbox({ focusLocation }) {
     height: '100vh',
     latitude: 21.0164909,
     longitude: 105.7772149,
-    zoom: 16
+    zoom: 10
   })
 
   const token = 'pk.eyJ1IjoidHJhbm5oYW4xMiIsImEiOiJja3k5cnd6M2QwOWN4MnZxbWJianJvNTgxIn0.ubgU2PdV-ahm1liOZLyjMw'
@@ -28,6 +29,34 @@ function Mapbox({ focusLocation }) {
   const {
     user: { uid }
   } = React.useContext(AuthContext)
+
+  //Declare variable for circle
+  let lon = 105.83675721458776,
+    lat = 21.024682141244533
+  var radius = 1
+  var center = [lon, lat]
+  var circle = turf.circle(center, radius)
+
+  // Get coordinates of user
+  useEffect(() => {
+    Member.map(userItem => {
+      if (userItem.user_id === uid) {
+        // setUserCoord(`${userItem.longitude},${userItem.latitude}`)
+        axios
+          .get(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${userItem.currentLocation}.json?access_token=${token}`
+          )
+          .then(function (response) {
+            const newUserCoord = `${response.data.features[0].center[0]},${response.data.features[0].center[1]}`
+            setUserCoord(newUserCoord)
+            console.log(userCoord)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
+    })
+  }, [Member, uid])
 
   useEffect(() => {
     let newS = []
@@ -72,7 +101,7 @@ function Mapbox({ focusLocation }) {
     axios
       .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${nameLocation}.json?access_token=${token}`)
       .then(function (response) {
-        const newCoordFocusLocation = `105.79845,20.99345;${response.data.features[0].center[0]},${response.data.features[0].center[1]}`
+        const newCoordFocusLocation = `105.7772149,21.0164909;${response.data.features[0].center[0]},${response.data.features[0].center[1]}`
         setFocusLocationCoord(newCoordFocusLocation)
       })
       .catch(function (error) {
@@ -103,7 +132,6 @@ function Mapbox({ focusLocation }) {
     // Get the coordinates from the response
     const coords = response.matchings[0].geometry
     return coords
-    // Code from the next step will go here
   }
 
   const layerRoute = new GeoJsonLayer({
@@ -131,18 +159,30 @@ function Mapbox({ focusLocation }) {
         }}
         height={viewport.height}
         width={viewport.width}
-        controller={true} // allows the user to move the map around
-        layers={layerRoute} // layers here!
+        controller={true}
+        layers={layerRoute}
       >
         <StaticMap
-          // ref={mapRef}
-          // {...viewport}
           {...viewport}
           mapStyle="mapbox://styles/mapbox/streets-v11"
           mapboxApiAccessToken={token}
           onViewportChange={setViewport}
         >
-          {newAddress.map(val => {
+          <div style={{ position: "absolute", bottom: 200, left: 100 }}>
+            <ScaleControl maxWidth={100} unit={"metric"} />
+          </div>
+          <Source id="my-data" type="geojson" data={circle}>
+            <Layer
+              id="point-90-hi"
+              type="fill"
+              paint={{
+                "fill-color": "#088",
+                "fill-opacity": 0.4,
+                "fill-outline-color": "yellow"
+              }}
+            />
+          </Source>
+          {newAddress.map((val, index) => {
             return (
               <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={-10} offsetTop={-28}>
                 <div>
@@ -151,7 +191,7 @@ function Mapbox({ focusLocation }) {
               </Marker>
             )
           })}
-          {newMember.map(val => {
+          {newMember.map((val, index) => {
             return (
               <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={-10} offsetTop={-28}>
                 <div>
