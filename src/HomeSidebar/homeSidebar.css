@@ -7,45 +7,6 @@
 .vote_mapbox {
   position: relative;
 }
-.go-back {
-  border-radius: 8px;
-  background-color: #f4511e;
-  border: none;
-  color: #ffffff;
-  text-align: center;
-  transition: all 0.5s;
-  cursor: pointer;
-  width: 45%;
-  height: 50px;
-  position: relative;
-  margin-bottom: 25px;
-}
-
-.go-back span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.5s;
-  font-size: 18px;
-}
-
-.go-back span:after {
-  content: '\00ab';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  left: -20px;
-  transition: 0.9s;
-}
-
-.go-back:hover span {
-  padding-left: 25px;
-}
-
-.go-back:hover span:after {
-  opacity: 1;
-  left: 0;
-}
 
 .home-sidebar {
   width: 100%;
@@ -99,6 +60,9 @@
   background-color: #eee;
   border-radius: 5px;
 }
+.vote_room:last-child {
+  margin-bottom: 0;
+}
 
 .quantilyVote_room {
   border-radius: 50%;
@@ -131,7 +95,7 @@
   width: 100%;
 }
 
-.btnEndVote{
+.btnEndVote {
   display: flex;
   justify-content: space-around;
 }
@@ -223,7 +187,7 @@ h3.title_banner {
   align-items: center;
   margin-bottom: 15px;
 }
-.vote_people:last-child{
+.vote_people:last-child {
   margin-bottom: 0;
 }
 .img_people {
@@ -244,32 +208,32 @@ h3.title_banner {
   font-size: 14px;
   color: #2e3553;
 }
-.custom[type="checkbox"] + label::before {
-  content: "";
+.custom[type='checkbox'] + label::before {
+  content: '';
   width: 3em;
   height: 1.5em;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  margin-right: 12px;
+  margin-right: 1em;
   border-radius: 6px;
   background-color: transparent;
   transition: background 300ms ease-in;
 }
-.custom[type="checkbox"] + label::after {
-  content: "\2713";
+.custom[type='checkbox'] + label::after {
+  content: '\2713';
   color: white;
   position: absolute;
-  left: 5px;
+  left: 7px;
   transform: scale(0);
   transition: all 300ms ease-in-out;
 }
-.custom[type="checkbox"]:checked + label::after {
+.custom[type='checkbox']:checked + label::after {
   transform: scale(1.2);
 }
-.custom[type="checkbox"]:checked + label::before {
+.custom[type='checkbox']:checked + label::before {
   background-color: #5850ec;
 }
-.custom[type="radio"] + label::before {
-  content: "";
+.custom[type='radio'] + label::before {
+  content: '';
   width: 1.4em;
   height: 1.4em;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -278,8 +242,8 @@ h3.title_banner {
   background-color: transparent;
   transition: all 300ms ease-in;
 }
-.custom[type="radio"] + label::after {
-  content: "";
+.custom[type='radio'] + label::after {
+  content: '';
   position: absolute;
   left: 6px;
   top: 7px;
@@ -290,27 +254,25 @@ h3.title_banner {
   transform: scale(0);
   transition: transform 300ms ease-in-out;
 }
-.custom[type="radio"]:checked + label::before {
+.custom[type='radio']:checked + label::before {
   background-color: #5850ec;
   border: 1px solid rgba(0, 0, 0, 0);
 }
-.custom[type="radio"]:checked + label::after {
+.custom[type='radio']:checked + label::after {
   transform: scale(0.9);
   border: 1px solid #5850ec;
 }
-.custom[type="radio"]{
+.custom[type='radio'] {
   display: none;
 }
 
-.contendisable{
+.contendisable {
   display: none;
   width: 0;
   height: 0;
 }
-.login_btn_none{
-  display: none;
-}
-.addressVote{
+
+.addressVote {
   font-size: 18px;
   color: #2e3553;
   padding: 10px;
