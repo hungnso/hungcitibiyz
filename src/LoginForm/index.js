@@ -12,6 +12,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { AppContext } from '../Context/AppProvider'
 import LogOut from '../components/LogOut'
+import { BsArrowReturnLeft, BsArrowReturnRight } from 'react-icons/bs'
 
 export default function LoginForm() {
   let navigate = useNavigate()
@@ -140,6 +141,7 @@ export default function LoginForm() {
 
                   <div className="login_btn_wrapper">
                     <button type="submit" onClick={e => handleGoBack(e)} className="btn login_btn">
+                      <BsArrowReturnLeft /> {''}
                       Trở Về
                     </button>
                     <button
@@ -147,6 +149,7 @@ export default function LoginForm() {
                       className="btn login_btn"
                       disabled={!(formik.isValid && formik.dirty && curraddName.length != 0)}
                     >
+                      <BsArrowReturnRight /> {''}
                       Tiếp Theo
                     </button>
                   </div>

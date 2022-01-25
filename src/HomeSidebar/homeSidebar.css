@@ -7,45 +7,6 @@
 .vote_mapbox {
   position: relative;
 }
-.go-back {
-  border-radius: 8px;
-  background-color: #f4511e;
-  border: none;
-  color: #ffffff;
-  text-align: center;
-  transition: all 0.5s;
-  cursor: pointer;
-  width: 45%;
-  height: 50px;
-  position: relative;
-  margin-bottom: 25px;
-}
-
-.go-back span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.5s;
-  font-size: 18px;
-}
-
-.go-back span:after {
-  content: '\00ab';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  left: -20px;
-  transition: 0.9s;
-}
-
-.go-back:hover span {
-  padding-left: 25px;
-}
-
-.go-back:hover span:after {
-  opacity: 1;
-  left: 0;
-}
 
 .home-sidebar {
   width: 100%;
@@ -88,6 +49,9 @@
 .vote_room:hover {
   background-color: #eee;
   border-radius: 5px;
+}
+.vote_room:last-child {
+  margin-bottom: 0;
 }
 
 .quantilyVote_room {
@@ -133,22 +97,6 @@
   background-color: #ffffff;
   position: relative;
   margin: 25px 0;
-}
-.btnEndVote_none button {
-  width: 45%;
-  height: 50px;
-  margin-top: 55px;
-  border-radius: 8px;
-  border: 1px solid;
-  font-size: 18px;
-  background-color: #ffffff;
-  position: relative;
-  margin-bottom: 25px;
-}
-.btnEndVote button:hover {
-  background-color: #f4511e;
-  color: #fff;
-  border: none;
 }
 
 .btnAddLocation button {
@@ -292,9 +240,7 @@ h3.titel_banner {
   width: 0;
   height: 0;
 }
-.login_btn_none {
-  display: none;
-}
+
 .addressVote {
   font-size: 18px;
   color: #2e3553;

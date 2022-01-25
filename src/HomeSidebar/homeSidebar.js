@@ -11,6 +11,9 @@ import { db } from '../firebase/config'
 import MapboxLocationVote from './mapboxLocationVote'
 import { query, orderBy, where, limit } from 'firebase/firestore'
 import useGetDataFirebase from '../hooks/useGetDataFirebase'
+import { FaShareAlt, FaCalendarCheck } from 'react-icons/fa'
+import { BsArrowReturnLeft } from 'react-icons/bs'
+import { SiGooglemaps } from 'react-icons/si'
 
 const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
   const navigate = useNavigate()
@@ -37,19 +40,11 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
 
   // const [voteStatus, setvoteStatus] = useState(true)
 
-<<<<<<< HEAD
-  const [value, SetValue] = useState('')
-  const [index, SetIndex] = useState('')
-
-  const room = db.collection('rooms')
-=======
   const room = db.collection('rooms')
 
   const [value, SetValue] = useState('')
   const [index, SetIndex] = useState('')
 
->>>>>>> hung99
-  const [hung, setHung] = useState()
   const onClose = () => {
     setShow2(false)
   }
@@ -182,22 +177,10 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
   }, [setCurrRoom, valueRoom])
 
   React.useEffect(() => {
-<<<<<<< HEAD
-    console.log(listMember)
-    console.log(userLogin)
-    console.log(memberInRoom)
-    setMember(listMember)
-  }, [listMember, userLogin, memberInRoom])
-
-  setCurrRoom(valueRoom)
-
-  //Kết thúc vote
-=======
     const userLogin = listMember.find(member => member?.user_id === uid)
     // console.log(userLogin)
   }, [listMember, uid])
 
->>>>>>> hung99
   const handleEndVote = e => {
     e.preventDefault()
     getDataVote()
@@ -309,16 +292,15 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
           </div>
 
           <div className="btnShareLink">
-<<<<<<< HEAD
             <button
               type="submit"
-              class={isActive ? 'login_btn_none' : 'btn login_btn'}
+              class="btn login_btn"
               style={{ width: '95%' }}
+              disabled={isActive}
               onClick={() => setShow2(true)}
             >
-=======
-            <button type="submit" className="btn login_btn" style={{ width: '95%' }} onClick={() => setShow2(true)}>
->>>>>>> hung99
+              <SiGooglemaps />
+              {''}
               Thêm địa Chỉ
             </button>
             <ModalForm
@@ -331,29 +313,39 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
           </div>
 
           <div className="btnShareLink">
-            <button type="submit" className="btn login_btn" style={{ width: '95%' }} onClick={() => setShow(true)}>
+            <button type="submit" class="btn login_btn" style={{ width: '95%' }} onClick={() => setShow(true)}>
+              <FaShareAlt /> {''}
               Chia Sẻ Link
             </button>
             <ModalForm
               show={show}
               onHide={() => setShow(false)}
               ModalTile={''}
-              ModalChildren={<PopupForm value={`http://localhost:3000/room-vote/${params.id}`} />}
-              // ModalChildren={<PopupForm value={window.Headers} />}
+              // ModalChildren={<PopupForm value={`http://localhost:3000/${selectedRoomId}`} />}
+              ModalChildren={<PopupForm value={window.Headers} />}
               size="md"
             />
           </div>
 
           <div className={isActive ? 'btnEndVote_none' : 'btnEndVote'}>
             {isHost?.title ? (
-              <button class="btn login_btn" type="submit" disabled={isActive} onClick={handleConfim}>
+              <button
+                class="btn login_btn"
+                type="submit"
+                disabled={isActive}
+                onClick={handleConfim}
+                style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <FaCalendarCheck /> {''}
                 Kết thúc
               </button>
             ) : (
               ''
             )}
             <button type="submit" class="btn login_btn" onClick={handleGoBack}>
-              <span>Quay lại</span>
+              <span>
+                <BsArrowReturnLeft /> {''} Quay lại
+              </span>
             </button>
           </div>
         </div>
