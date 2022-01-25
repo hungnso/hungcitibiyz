@@ -21,7 +21,7 @@ export default function LoginForm() {
   const [show, setShow] = useState(false)
 
   const handleGoBack = () => {
-    navigate(-1)
+    navigate('/')
   }
   const {
     user: { displayName, uid, photoURL }
@@ -45,13 +45,6 @@ export default function LoginForm() {
       setCurrLocation(curraddName)
       console.log(curraddName)
       setNickName(full_name)
-
-      // addDocument('user_room', {
-      //   currentLocation: curraddName,
-      //   nickname: values.full_name,
-      //   user_id: uid
-      // })
-      // console.log(selectedRoomId)
       selectedRoomId ? navigate(`/room-vote/${selectedRoomId}`) : navigate('/create')
       if (selectedRoomId) {
         addDocument('user_room', {
@@ -60,6 +53,24 @@ export default function LoginForm() {
           user_id: uid,
           avatar: photoURL,
           room_id: selectedRoomId
+        })
+        const clickRoom = db.collection('rooms').doc(selectedRoomId)
+        clickRoom.get().then(doc => {
+          if (doc.exists) {
+            console.log('Document data:', doc.data())
+            const { member, client } = doc.data()
+            if (!member.includes(uid)) {
+              clickRoom.update({
+                member: [...member, uid],
+                client: [...client, uid]
+              })
+            } else {
+              return
+            }
+          } else {
+            // doc.data() will be undefined in this case
+            alert('Phòng này không tồn tại')
+          }
         })
       }
     }

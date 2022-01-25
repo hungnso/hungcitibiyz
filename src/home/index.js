@@ -46,7 +46,6 @@ function Home() {
         ...doc.data(),
         id: doc.id
       }))
-      console.log(documents)
     })
 
   const conditionHost = React.useMemo(() => {
@@ -104,10 +103,11 @@ function Home() {
       clickRoom.get().then(doc => {
         if (doc.exists) {
           console.log('Document data:', doc.data())
-          const { member } = doc.data()
+          const { member, client } = doc.data()
           if (!member.includes(uid)) {
             clickRoom.update({
-              member: [...member, uid]
+              member: [...member, uid],
+              client: [...client, uid]
             })
           } else {
             alert('Bạn đã vào phòng này rồi vui lòng kiểm tra trong mục phòng đã tham gia!')
