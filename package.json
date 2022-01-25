@@ -34,8 +34,7 @@
     "lint": "eslint --ext js,jsx src/",
     "lint:fix": "eslint --fix --ext js,jsx src/",
     "prettier": "prettier --check \"src/**/(**.jsx|*.js|*.scss|*.css)\"",
-    "prettier:fix": "prettier --write \"src/**/(**.jsx|*.js|*.scss|*.css)\"",
-    "deploy": "react-scripts --max_old_space_size=4096 build && firebase deploy"
+    "prettier:fix": "prettier --write \"src/**/(**.jsx|*.js|*.scss|*.css)\""
   },
   "eslintConfig": {
     "extends": [
