@@ -7,45 +7,6 @@
 .vote_mapbox {
   position: relative;
 }
-.go-back {
-  border-radius: 8px;
-  background-color: #f4511e;
-  border: none;
-  color: #ffffff;
-  text-align: center;
-  transition: all 0.5s;
-  cursor: pointer;
-  width: 45%;
-  height: 50px;
-  position: relative;
-  margin-bottom: 25px;
-}
-
-.go-back span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.5s;
-  font-size: 18px;
-}
-
-.go-back span:after {
-  content: '\00ab';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  left: -20px;
-  transition: 0.9s;
-}
-
-.go-back:hover span {
-  padding-left: 25px;
-}
-
-.go-back:hover span:after {
-  opacity: 1;
-  left: 0;
-}
 
 .home-sidebar {
   width: 100%;

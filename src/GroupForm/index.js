@@ -94,7 +94,7 @@ function GroupForm() {
       }
     }
   })
-
+//Xoá địa chỉ
   const onDelete = value => {
     //  db.child(`location/${value}`).remove();
     console.log(locationVote)
@@ -108,16 +108,6 @@ function GroupForm() {
     }
     setLocationVote([...locationVote])
 
-    // const deleteAddress = firebase.database().ref('user_room').child(locationVote.id)
-    // const item = locationVote.pop();
-    // console.log(locationVote)
-    // setLocationVote(item =>[...item])
-
-    // deleteAddress.remove()
-    // locationVote.remove()
-    // setLocationVote(locationVote)
-    // setShow(false);
-    // console.log(deleteAddress)
   }
   const handleEdit = (value, index) => {
     console.log(value, index)
