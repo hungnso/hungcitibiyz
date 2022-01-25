@@ -14,6 +14,7 @@ import useGetDataFirebase from '../hooks/useGetDataFirebase'
 import { FaShareAlt, FaCalendarCheck } from 'react-icons/fa'
 import { BsArrowReturnLeft } from 'react-icons/bs'
 import { SiGooglemaps } from 'react-icons/si'
+import { FaCrown } from "react-icons/fa";
 
 const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
   const navigate = useNavigate()
@@ -257,7 +258,8 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
 
 
           <div className={isActive ? 'home-sidebar-location' : 'contendisable'}>
-            <h3 className="title">Địa điểm được chọn nhiều nhất</h3>
+            <h3 className="title" style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}><FaCrown />{""}
+              <span style={{marginLeft: '10px', fontSize: '25px'}}>Địa điểm được chọn nhiều nhất</span></h3>
             <h5 className="addressVote">{voteWin.location}</h5>
           </div>
 
@@ -266,7 +268,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
             {listAdd.map(location => (
               <div className="vote_room" key={location.id}>
                 <input
-                  className={isActive ? 'login_btn_none' : 'custom'}
+                  className="custom"
                   type="checkbox"
                   value={location.id}
                   onClick={e => handleCheckBox(e)}
