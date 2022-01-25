@@ -86,6 +86,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
             return
           } else if (!uid) {
             alert('Bạn chưa đăng nhập')
+            // setSelectedRoomId(params.id)
             navigate('/contact')
           } else {
             alert('Bạn cần phải điền tên và địa chỉ hiện tại! ^_^')
@@ -309,8 +310,8 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
               show={show}
               onHide={() => setShow(false)}
               ModalTile={''}
-              // ModalChildren={<PopupForm value={`http://localhost:3000/${selectedRoomId}`} />}
-              ModalChildren={<PopupForm value={window.Headers} />}
+              ModalChildren={<PopupForm value={`http://localhost:3000/room-vote/${params.id}`} />}
+              // ModalChildren={<PopupForm value={window.Headers} />}
               size="md"
             />
           </div>
@@ -323,10 +324,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
             ) : (
               ''
             )}
-          </div>
-
-          <div className="btnEndVote">
-            <button type="submit" className="btn login_btn" onClick={handleGoBack}>
+            <button type="submit" class="btn login_btn" onClick={handleGoBack}>
               <span>Quay lại</span>
             </button>
           </div>
