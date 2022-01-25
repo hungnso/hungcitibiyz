@@ -166,7 +166,7 @@ function Mapbox({ focusLocation }) {
       >
         <StaticMap
           {...viewport}
-          mapStyle="mapbox://styles/mapbox/streets-v11"
+          // mapStyle="mapbox://styles/mapbox/streets-v11"
           mapboxApiAccessToken={token}
           onViewportChange={setViewport}
         >
