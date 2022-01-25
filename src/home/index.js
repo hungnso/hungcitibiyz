@@ -11,7 +11,8 @@ import useCurrAdd from '../hooks/useCurrAdd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import LogOut from '../components/LogOut'
-import { FaVoteYea, FaClipboardList } from 'react-icons/fa'
+import { FaVoteYea } from 'react-icons/fa'
+import { AiFillDelete } from 'react-icons/ai'
 
 function Home() {
   const {
@@ -190,8 +191,8 @@ function Home() {
               <button className="btn_address" onClick={() => handleJoinRoom(room.id)}>
                 {room.title}
               </button>
-              <button className="login_btn" onClick={handleDelete} style={{ marginTop: '20px', marginLeft: '20px' }}>
-                Xóa
+              <button className="login_btn btn_delete" onClick={handleDelete}>
+                <AiFillDelete />
               </button>
             </div>
           ))}
@@ -209,8 +210,8 @@ function Home() {
               <button className="btn_address" onClick={() => handleJoinRoom(room.id)}>
                 {room.title}
               </button>
-              <button className="login_btn" onClick={handleDelete} style={{ marginTop: '20px', marginLeft: '20px' }}>
-                Xóa
+              <button className="login_btn btn_delete" onClick={handleDelete}>
+                <AiFillDelete />
               </button>
             </div>
           ))}

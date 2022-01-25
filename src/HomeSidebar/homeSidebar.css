@@ -89,6 +89,9 @@
   background-color: #eee;
   border-radius: 5px;
 }
+.vote_room:last-child{
+  margin-bottom: 0;
+}
 
 .quantilyVote_room {
   border-radius: 50%;

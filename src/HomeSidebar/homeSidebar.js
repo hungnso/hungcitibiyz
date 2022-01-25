@@ -11,6 +11,9 @@ import { db } from '../firebase/config'
 import MapboxLocationVote from '../MapAddAddress/mapboxLocationVote'
 import { query, orderBy, where, limit } from 'firebase/firestore'
 import useGetDataFirebase from '../hooks/useGetDataFirebase'
+import { FaShareAlt, FaCalendarCheck } from 'react-icons/fa'
+import { BsArrowReturnLeft } from 'react-icons/bs'
+import { SiGooglemaps } from 'react-icons/si'
 
 const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
   const navigate = useNavigate()
@@ -278,7 +281,15 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
           </div>
 
           <div className="btnShareLink">
-            <button type="submit" class="btn login_btn" style={{ width: '95%' }} onClick={() => setShow2(true)}>
+            <button
+              type="submit"
+              class="btn login_btn"
+              style={{ width: '95%' }}
+              disabled={isActive}
+              onClick={() => setShow2(true)}
+            >
+              <SiGooglemaps />
+              {''}
               Thêm địa Chỉ
             </button>
             <ModalForm
@@ -292,6 +303,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
 
           <div className="btnShareLink">
             <button type="submit" class="btn login_btn" style={{ width: '95%' }} onClick={() => setShow(true)}>
+              <FaShareAlt /> {''}
               Chia Sẻ Link
             </button>
             <ModalForm
@@ -306,14 +318,23 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
 
           <div className="btnEndVote">
             {isHost?.title ? (
-              <button class="btn login_btn" type="submit" disabled={isActive} onClick={handleConfim}>
+              <button
+                class="btn login_btn"
+                type="submit"
+                disabled={isActive}
+                onClick={handleConfim}
+                style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <FaCalendarCheck /> {''}
                 Kết thúc
               </button>
             ) : (
               ''
             )}
             <button type="submit" class="btn login_btn" onClick={handleGoBack}>
-              <span>Quay lại</span>
+              <span>
+                <BsArrowReturnLeft /> {''} Quay lại
+              </span>
             </button>
           </div>
         </div>
