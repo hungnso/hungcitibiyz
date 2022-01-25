@@ -11,7 +11,8 @@ import useCurrAdd from '../hooks/useCurrAdd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import LogOut from '../components/LogOut'
-import { FaVoteYea, FaClipboardList } from 'react-icons/fa'
+import { FaVoteYea } from 'react-icons/fa'
+import { AiFillDelete } from 'react-icons/ai'
 
 function Home() {
   const {
@@ -26,7 +27,6 @@ function Home() {
     setCurrLocation,
     setCurrAddName
   } = useContext(AppContext)
-  console.log(roomHost)
   const [hasFocus, setFocus] = useState(false)
 
   const navigate = useNavigate()
@@ -46,7 +46,6 @@ function Home() {
         ...doc.data(),
         id: doc.id
       }))
-      console.log(documents)
     })
 
   const conditionHost = React.useMemo(() => {
@@ -83,7 +82,6 @@ function Home() {
   // }, [currAddClient])
 
   const handleJoinRoom = value => {
-    console.log(value)
     setSelectedRoomId(value)
     // localStorage.setItem('roomId', value)
     navigate(`/room-vote/${value}`)
@@ -103,11 +101,11 @@ function Home() {
       // alert(JSON.stringify(values, null, 2))
       clickRoom.get().then(doc => {
         if (doc.exists) {
-          console.log('Document data:', doc.data())
-          const { member } = doc.data()
+          const { member, client } = doc.data()
           if (!member.includes(uid)) {
             clickRoom.update({
-              member: [...member, uid]
+              member: [...member, uid],
+              client: [...client, uid]
             })
           } else {
             alert('Bạn đã vào phòng này rồi vui lòng kiểm tra trong mục phòng đã tham gia!')
@@ -190,8 +188,8 @@ function Home() {
               <button className="btn_address" onClick={() => handleJoinRoom(room.id)}>
                 {room.title}
               </button>
-              <button className="login_btn" onClick={handleDelete} style={{ marginTop: '20px', marginLeft: '20px' }}>
-                Xóa
+              <button className="login_btn btn_delete" onClick={handleDelete}>
+                <AiFillDelete />
               </button>
             </div>
           ))}
@@ -209,8 +207,8 @@ function Home() {
               <button className="btn_address" onClick={() => handleJoinRoom(room.id)}>
                 {room.title}
               </button>
-              <button className="login_btn" onClick={handleDelete} style={{ marginTop: '20px', marginLeft: '20px' }}>
-                Xóa
+              <button className="login_btn btn_delete" onClick={handleDelete}>
+                <AiFillDelete />
               </button>
             </div>
           ))}

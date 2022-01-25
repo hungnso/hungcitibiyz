@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useCallback } from 'react'
-import { StaticMap, Marker, Source, Layer, ScaleControl } from 'react-map-gl'
+import { StaticMap, Marker, Source, Layer } from 'react-map-gl'
 import { useState } from 'react'
 import { AppContext } from '../Context/AppProvider'
 import { AuthContext } from '../Context/AuthProvider'
@@ -17,7 +17,7 @@ function Mapbox({ focusLocation }) {
     height: '100vh',
     latitude: 21.0164909,
     longitude: 105.7772149,
-    zoom: 10
+    zoom: 13
   })
 
   const token = 'pk.eyJ1IjoidHJhbm5oYW4xMiIsImEiOiJja3k5cnd6M2QwOWN4MnZxbWJianJvNTgxIn0.ubgU2PdV-ahm1liOZLyjMw'
@@ -36,7 +36,6 @@ function Mapbox({ focusLocation }) {
   var radius = 1
   var center = [lon, lat]
   var circle = turf.circle(center, radius)
-
   // Get coordinates of user
   useEffect(() => {
     Member.map(userItem => {
@@ -59,23 +58,26 @@ function Mapbox({ focusLocation }) {
   }, [Member, uid])
 
   useEffect(() => {
-    let newS = []
-    list.map(address => {
-      axios
-        .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address.location}.json?access_token=${token}`)
-        .then(function (response) {
-          newS.push({
-            ...address,
-            longitude: response.data.features[0].center[0],
-            latitude: response.data.features[0].center[1]
+    setTimeout(() => {
+      let newS = []
+      list.map(address => {
+        axios
+          .get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address.location}.json?access_token=${token}`)
+          .then(function (response) {
+            newS.push({
+              ...address,
+              longitude: response.data.features[0].center[0],
+              latitude: response.data.features[0].center[1]
+            })
           })
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    })
-    setNewAddress(newS)
+          .catch(function (error) {
+            console.log(error)
+          })
+      })
+      setNewAddress(newS)
+    }, 500)
   }, [list])
+  console.log(newAddress)
 
   useEffect(() => {
     let newS = []
@@ -168,29 +170,30 @@ function Mapbox({ focusLocation }) {
           mapboxApiAccessToken={token}
           onViewportChange={setViewport}
         >
-          <div style={{ position: "absolute", bottom: 200, left: 100 }}>
-            <ScaleControl maxWidth={100} unit={"metric"} />
-          </div>
           <Source id="my-data" type="geojson" data={circle}>
             <Layer
               id="point-90-hi"
               type="fill"
               paint={{
-                "fill-color": "#088",
-                "fill-opacity": 0.4,
-                "fill-outline-color": "yellow"
+                'fill-color': '#088',
+                'fill-opacity': 0.4,
+                'fill-outline-color': 'yellow'
               }}
             />
           </Source>
-          {newAddress.map((val, index) => {
-            return (
-              <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={-10} offsetTop={-28}>
-                <div>
-                  <FaMapMarkerAlt className="marker marker_location" />
-                </div>
-              </Marker>
-            )
-          })}
+          {
+            // setTimeout(() => {
+            newAddress.map((val, index) => {
+              return (
+                <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={-10} offsetTop={-28}>
+                  <div>
+                    <FaMapMarkerAlt className="marker marker_location" />
+                  </div>
+                </Marker>
+              )
+            })
+            // }, 1000)
+          }
           {newMember.map((val, index) => {
             return (
               <Marker latitude={val.latitude} longitude={val.longitude} offsetLeft={-10} offsetTop={-28}>
@@ -205,4 +208,4 @@ function Mapbox({ focusLocation }) {
     </div>
   )
 }
-export default Mapbox
+export default React.memo(Mapbox)
