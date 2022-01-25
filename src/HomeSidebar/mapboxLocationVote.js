@@ -116,9 +116,9 @@ function MapboxLocationVote({ setShow, onClose }) {
     if (!locationVoteHome.includes(nameAddress) && locationVoteHome.length <= 4) {
       setLocationVote(prev => [...prev, nameAddress])
     } else if (locationVoteHome.length > 4) {
-      alert('Bạn chỉ đc nhập tối đa 5 địa chỉ trong home')
+      alert('Bạn chỉ được nhập tối đa 5 địa điểm để bình chọn !')
     } else {
-      alert('Địa chỉ trùng lắp')
+      alert('Địa chỉ trùng lặp !')
     }
 
     onClose()

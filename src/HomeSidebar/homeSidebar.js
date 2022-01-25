@@ -188,7 +188,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     }
     
     const handleConfim = e => {
-      if(window.confirm("Bạn có muốn kết thúc bình chọn")){
+      if(window.confirm("Bạn có muốn kết thúc bình chọn không ?")){
         handleEndVote(e)
       }
   }
@@ -234,21 +234,24 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
     <>
       <div className="home">
         <div className="home-sidebar">
+          <h3 className="title">Tiêu đề cuộc bình chọn</h3>
           <div className="home-sidebar-title">
             {/* <h2>{selectedRoomHost.title ? selectedRoomHost.title : selectedRoomClient.title}</h2> */}
-            <h2>{valueRoom.title}</h2>
+            <h3>{valueRoom.title}</h3>
           </div>
+          <h3 className="title">Nội dung cuộc bình chọn</h3>
           <div className="home-sidebar-content">
             {/* <h2>{selectedRoomHost.description ? selectedRoomHost.description : selectedRoomClient.description}</h2> */}
             <h2>{valueRoom.description}</h2>
           </div>
 
+
+          <h3 className="title">Địa điểm được chọn nhiều nhất</h3>
           <div className={isActive ? 'home-sidebar-location' : 'contendisable'}>
-            <h3 className="titel_banner">Địa điểm được chọn nhiều nhất</h3>
             <h5 className="addressVote">{voteWin.location}</h5>
           </div>
 
-          <h3 className="titel_banner">Danh Sách Địa Chỉ Bình Chọn</h3>
+          <h3 className="title_banner">Danh Sách Địa Chỉ Bình Chọn</h3>
           <div className="home-sidebar-location">
             {listAdd.map(location => (
               <div className="vote_room" key={location.id}>
@@ -271,7 +274,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation }) => {
             ))}
           </div>
 
-          <h3 className="titel_banner">Danh Sách Người Tham Gia</h3>
+          <h3 className="title_banner">Danh Sách Người Tham Gia</h3>
           <div className="home-sidebar-location">
             {listMember?.map(member => (
               <div className="vote_people" key={member.uid}>
