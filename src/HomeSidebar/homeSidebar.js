@@ -196,14 +196,8 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
         console.log('Document successfully updated!')
       })
   }
-
-  const handleConfim = e => {
-    if (window.confirm('Bạn có muốn kết thúc bình chọn')) {
-      handleEndVote(e)
-    }
-  }
     
-    const handleConfim = e => {
+    const handleConfirm = e => {
       if(window.confirm("Bạn có muốn kết thúc bình chọn không ?")){
         handleEndVote(e)
       }
@@ -262,8 +256,8 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
           </div>
 
 
-          <h3 className="title">Địa điểm được chọn nhiều nhất</h3>
           <div className={isActive ? 'home-sidebar-location' : 'contendisable'}>
+            <h3 className="title">Địa điểm được chọn nhiều nhất</h3>
             <h5 className="addressVote">{voteWin.location}</h5>
           </div>
 
@@ -330,8 +324,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
               show={show}
               onHide={() => setShow(false)}
               ModalTile={''}
-              // ModalChildren={<PopupForm value={`http://localhost:3000/${selectedRoomId}`} />}
-              ModalChildren={<PopupForm value={window.Headers} />}
+              ModalChildren={<PopupForm value={`http://localhost:3000/room-vote/${params.id}`} />}
               size="md"
             />
           </div>
@@ -342,7 +335,7 @@ const HomeSidebar = ({ setCurrRoom, setFocusLocation, listMember }) => {
                 class="btn login_btn"
                 type="submit"
                 disabled={isActive}
-                onClick={handleConfim}
+                onClick={handleConfirm}
                 style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
               >
                 <FaCalendarCheck /> {''}
